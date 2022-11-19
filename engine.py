@@ -69,7 +69,6 @@ class Engine():
             self.location = data['location']
             self.selected_quest = data['quest']
             self.player.set_data(data['player'])
-            #self.shop.set_data(data['shop'])
             world = data['world']
             f.close()
         self.state = "main_menu"
@@ -269,7 +268,7 @@ class Engine():
         if select == "2": hand = "hand_r"
         dmg = self.player.get_damage(hand)
         self.mob.take_damage(dmg)
-        self.text("{} attacked {} for {} damage".format(self.player.name, self.mob.name, dmg))
+        self.text("{} attacked {} for {} damage".format(self.player.name, self.mob.name, max(1, dmg-self.mob.get_armor())))
         self.ai_turn = True
         self.state = "battle"
 
@@ -313,7 +312,6 @@ class Engine():
     def battle_win(self):
         exp_bonus = int(mobs[self.mob.race]['exp']*(self.mob.level*mobs[self.mob.race]['curve']))
         self.player.gain_experience(exp_bonus)
-        self.shop.restock()
         gold = int(self.mob.gold*0.75)
         self.player.gold = int(self.player.gold+gold)
         self.mob.gold = int(self.mob.gold-gold)
@@ -335,7 +333,6 @@ class Engine():
         self.state = "main_menu"
 
     def battle_lose(self):
-        self.shop.restock()
         gold = int(self.player.gold*0.75)
         self.player.gold = int(self.player.gold-gold)
         self.mob.gold = int(self.mob.gold+gold)
@@ -386,7 +383,7 @@ class Engine():
             if self.mob.equip['hand_r'] != "nothing": hand = "hand_r"
             dmg = self.mob.get_damage(hand)
             self.player.take_damage(dmg)
-            self.text("{} attacked {} for {} damage".format(self.mob.name, self.player.name, dmg))
+            self.text("{} attacked {} for {} damage".format(self.mob.name, self.player.name, max(1, dmg-self.player.get_armor())))
             self.ai_turn = False
 
     def battle_player(self):
@@ -676,7 +673,19 @@ class Engine():
         elif sel == "3": self.state = "set_margin"
         elif sel == "4": self.state = "set_width"
 
+    def update_background(self):
+        for l in world:
+            if random.randint(0, 1000) < 10:
+                gold = world[l]['shop']['gold']
+                markup = world[l]['shop']['markup']
+                if random.randint(0, 1000) < 5: gold += random.randint(-gold/4, gold/4)
+                if random.randint(0, 1000) < 1: markup += random.randrange(-0.2, 0.2)
+                S = Shop(gold, markup)
+                world[l]['shop'] = S.get_data()
+        self.shop.set_data(world[self.location]['shop'])
+
     def update(self):
+        self.update_background()
         if self.state == "battle": self.battle()
         elif self.state == "quest": self.quest_menu()
         elif self.state == "item": self.player_item()
