@@ -1,3 +1,5 @@
+import random
+
 from mob import *
 from item import *
 from magic import *
@@ -109,7 +111,7 @@ class Entity():
         return self.defense+self.get_defense_bonus()
 
     def take_damage(self, dmg):
-        self.hp -= max(dmg-self.get_armor(), 0)
+        self.hp -= max(dmg-self.get_armor(), 1)
 
     def add_spell(self, spell):
         if spell in self.spells:

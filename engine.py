@@ -269,7 +269,7 @@ class Engine():
         if select == "2": hand = "hand_r"
         dmg = self.player.get_damage(hand)
         self.mob.take_damage(dmg)
-        self.text("{} attacked {} for {} damage".format(self.player.name, self.mob.name, dmg))
+        self.text("{} attacked {} for {} damage".format(self.player.name, self.mob.name, max(1, dmg-self.mob.get_armor())))
         self.ai_turn = True
         self.state = "battle"
 
@@ -386,7 +386,7 @@ class Engine():
             if self.mob.equip['hand_r'] != "nothing": hand = "hand_r"
             dmg = self.mob.get_damage(hand)
             self.player.take_damage(dmg)
-            self.text("{} attacked {} for {} damage".format(self.mob.name, self.player.name, dmg))
+            self.text("{} attacked {} for {} damage".format(self.mob.name, self.player.name, max(1, dmg-self.player.get_armor())))
             self.ai_turn = False
 
     def battle_player(self):
