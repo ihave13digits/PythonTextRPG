@@ -187,7 +187,7 @@ class Engine():
 
     def main_menu(self):
         self.clear_text()
-        print("(1) Battle\n(2) Stats\n(3) Items\n(4) Equip\n(5) Craft\n(6) Travel\n(7) Shop\n(8) Settings\n(0) Exit")
+        print("(1) Battle\n(2) Stats\n(3) Inventory\n(4) Location\n(5) Settings\n(0) Exit")
         sel = input(": ")
         if sel == "0": self.state = "exit"
         elif sel == "1":
@@ -195,12 +195,26 @@ class Engine():
             self.randomize_mob()
             self.state = "battle"
         elif sel == "2": self.entity_stats(self.player, "main_menu")
-        elif sel == "3": self.state = "item"
-        elif sel == "4": self.state = "equip"
-        elif sel == "5": self.state = "craft"
-        elif sel == "6": self.state = "travel_menu"
-        elif sel == "7": self.state = "shop_menu"
-        elif sel == "8": self.state = "settings"
+        elif sel == "3": self.state = "inventory_menu"
+        elif sel == "4": self.state = "location_menu"
+        elif sel == "5": self.state = "settings"
+
+    def inventory_menu(self):
+        self.clear_text()
+        print("(1) Items\n(2) Equip\n(3) Craft\n(0) Back")
+        sel = input(": ")
+        if sel == "0": self.state = "main_menu"
+        elif sel == "1": self.state = "item"
+        elif sel == "2": self.state = "equip"
+        elif sel == "3": self.state = "craft"
+
+    def location_menu(self):
+        self.clear_text()
+        print("(1) Travel\n(2) Shop\n(0) Back")
+        sel = input(": ")
+        if sel == "0": self.state = "main_menu"
+        elif sel == "1": self.state = "travel_menu"
+        elif sel == "2": self.state = "shop_menu"
 
     def exit_menu(self):
         self.text("Are you sure you want to exit?")
@@ -225,6 +239,12 @@ class Engine():
     def quest_menu(self):
         global quest
         part = quest[self.selected_quest]['part']
+        if 'reward' in quest[self.selected_quest][part]:
+            stat = quest[self.selected_quest][part]['reward']['stat']
+            value = quest[self.selected_quest][part]['reward']['value']
+            self.player.reward(stat, value)
+        if 'completed' in quest[self.selected_quest][part]:
+            quest[self.selected_quest]['completed'] = quest[self.selected_quest][part]['completed']
         if 'state' in quest[self.selected_quest][part]:
             self.state = quest[self.selected_quest][part]['state']
             return
@@ -241,6 +261,14 @@ class Engine():
                     value = quest[self.selected_quest][part]['option'][sel]['reward']['value']
                     self.player.reward(stat, value)
         quest[self.selected_quest]['part'] = quest[self.selected_quest][part]['part']
+
+    def quest_history(self):
+        for q in quest:
+            if quest[q]['discovered']:
+                qst = q
+                if quest[q]['completed']:
+                    qst = "".format()
+                print()
 
     ##
     ### Battle
@@ -264,8 +292,8 @@ class Engine():
         print("(1) Left Hand\n(2) Right Hand\n(0) Back")
         select = input(": ")
         if select == "0": return
-        if select == "1": hand = "hand_l"
-        if select == "2": hand = "hand_r"
+        if select == "1": hand = "left hand"
+        if select == "2": hand = "right hand"
         dmg = self.player.get_damage(hand)
         self.mob.take_damage(dmg)
         self.text("{} attacked {} for {} damage".format(self.player.name, self.mob.name, max(1, dmg-self.mob.get_armor())))
@@ -315,6 +343,8 @@ class Engine():
         gold = int(self.mob.gold*0.75)
         self.player.gold = int(self.player.gold+gold)
         self.mob.gold = int(self.mob.gold-gold)
+        if self.player.confused: self.player.confused = False
+        if self.player.stunned: self.player.stunned = False
         self.text("{} won the battle, gaining {} experience and {} gold".format(self.player.name, exp_bonus, gold))
         for item in self.mob.equip:
             if self.mob.equip[item] != "nothing":
@@ -338,10 +368,22 @@ class Engine():
         self.mob.gold = int(self.mob.gold+gold)
         self.player.hp = self.player.HP
         self.player.mp = self.player.MP
+        if self.player.poisoned: self.player.poisoned = False
+        if self.player.confused: self.player.confused = False
+        if self.player.stunned: self.player.stunned = False
+        if self.player.burned: self.player.burned = False
         self.text("{} lost the battle, losing {} gold".format(self.player.name, gold))
         self.state = "main_menu"
 
     def battle_ai(self):
+        if self.mob.burned:
+            self.text("{} took {} burn damage".format(self.mob.name, 1))
+            self.mob.take_damage(1)
+            self.clear_text()
+        if self.mob.poisoned:
+            self.text("{} took {} poison damage".format(self.mob.name, 1))
+            self.mob.take_damage(1)
+            self.clear_text()
         if self.mob.hp < self.mob.HP/2:
             for i in self.mob.inventory:
                 if 'hp' in items[i] and not 'mp' in items[i]:
@@ -379,14 +421,22 @@ class Engine():
                     self.ai_turn = False
         if not can_cast:
             hand = "hand_r"
-            if self.mob.equip['hand_l'] != "nothing": hand = "hand_l"
-            if self.mob.equip['hand_r'] != "nothing": hand = "hand_r"
+            if self.mob.equip['left hand'] != "nothing": hand = "left hand"
+            if self.mob.equip['right hand'] != "nothing": hand = "right hand"
             dmg = self.mob.get_damage(hand)
             self.player.take_damage(dmg)
             self.text("{} attacked {} for {} damage".format(self.mob.name, self.player.name, max(1, dmg-self.player.get_armor())))
             self.ai_turn = False
 
     def battle_player(self):
+        if self.player.burned:
+            self.text("{} took {} burn damage".format(self.player.name, 1))
+            self.player.take_damage(1)
+            self.clear_text()
+        if self.player.poisoned:
+            self.text("{} took {} poison damage".format(self.player.name, 1))
+            self.player.take_damage(1)
+            self.clear_text()
         print("(1) Attack\n(2) Stats\n(3) Magic\n(4) Item\n(0) Run")
         sel = input(": ")
         if sel == "0": self.state = "main_menu"
@@ -429,12 +479,13 @@ class Engine():
         emg = "{} [{}]".format(entity.magic, entity.get_magic_bonus())
         eat = "{} [{}]".format(entity.attack, entity.get_attack_bonus())
         edf = "{} [{}]".format(entity.defense, entity.get_defense_bonus())
-        print("Name:{}{}".format(" "*(self.menu_width-(len("Name:")+len(entity.name))), entity.name))
+        print("Location:{}{}".format(" "*(self.menu_width-(len("Location:")+len(self.location))), self.location))
+        print("\nName:{}{}".format(" "*(self.menu_width-(len("Name:")+len(entity.name))), entity.name))
         print("Gold:{}{}".format(" "*(self.menu_width-(len("Gold:")+len(str(entity.gold)))), entity.gold))
         print("Level:{}{}".format(" "*(self.menu_width-(len("Level:")+len(str(entity.level)))), entity.level))
         print("Points:{}{}".format(" "*(self.menu_width-(len("Points:")+len(str(entity.points)))), entity.points))
         print("Experience:{}{}".format(" "*(self.menu_width-(len("Experience:")+len(exp))), exp))
-        print("Health:{}{}".format(" "*(self.menu_width-(len("Health:")+len(ehp))), ehp))
+        print("\nHealth:{}{}".format(" "*(self.menu_width-(len("Health:")+len(ehp))), ehp))
         print("Mana:{}{}".format(" "*(self.menu_width-(len("Mana:")+len(emp))), emp))
         print("Magic:{}{}".format(" "*(self.menu_width-(len("Magic:")+len(emg))), emg))
         print("Attack:{}{}".format(" "*(self.menu_width-(len("Attack:")+len(eat))), eat))
@@ -446,6 +497,24 @@ class Engine():
                 spending_points = False
                 self.state = menu
                 return
+            self.clear_text()
+            exp = "{}/{}".format(entity.exp, entity.level_up)
+            ehp = "{}/{}".format(entity.hp, entity.HP)
+            emp = "{}/{}".format(entity.mp, entity.MP)
+            emg = "{} [{}]".format(entity.magic, entity.get_magic_bonus())
+            eat = "{} [{}]".format(entity.attack, entity.get_attack_bonus())
+            edf = "{} [{}]".format(entity.defense, entity.get_defense_bonus())
+            print("Location:{}{}".format(" "*(self.menu_width-(len("Location:")+len(self.location))), self.location))
+            print("\nName:{}{}".format(" "*(self.menu_width-(len("Name:")+len(entity.name))), entity.name))
+            print("Gold:{}{}".format(" "*(self.menu_width-(len("Gold:")+len(str(entity.gold)))), entity.gold))
+            print("Level:{}{}".format(" "*(self.menu_width-(len("Level:")+len(str(entity.level)))), entity.level))
+            print("Points:{}{}".format(" "*(self.menu_width-(len("Points:")+len(str(entity.points)))), entity.points))
+            print("Experience:{}{}".format(" "*(self.menu_width-(len("Experience:")+len(exp))), exp))
+            print("\nHealth:{}{}".format(" "*(self.menu_width-(len("Health:")+len(ehp))), ehp))
+            print("Mana:{}{}".format(" "*(self.menu_width-(len("Mana:")+len(emp))), emp))
+            print("Magic:{}{}".format(" "*(self.menu_width-(len("Magic:")+len(emg))), emg))
+            print("Attack:{}{}".format(" "*(self.menu_width-(len("Attack:")+len(eat))), eat))
+            print("Defense:{}{}".format(" "*(self.menu_width-(len("Defense:")+len(edf))), edf))
             print("(1) Increase Magic\n(2) Increase Attack\n(3) Increase Defense\n(4) Increase Health\n(5) Increase Mana\n(0) Back")
             sel = input(": ")
             if sel == "0":
@@ -474,7 +543,7 @@ class Engine():
     ##
 
     def player_item(self):
-        sel = self.inventory_selection(self.player.inventory, "main_menu")
+        sel = self.inventory_selection(self.player.inventory, "inventory_menu")
         if sel != "nothing":
             self.player.use_item(sel)
             self.text("{} used {}".format(self.player.name, sel))
@@ -486,7 +555,7 @@ class Engine():
         print("(0) Back")
         sel = input(": ")
         if sel == "0":
-            self.state = "main_menu"
+            self.state = "inventory_menu"
             return
         if sel in crafting and self.player.can_craft_item(sel):
             self.player.craft_item(sel)
@@ -503,7 +572,7 @@ class Engine():
         print("(0) Back")
         sel = input(": ")
         if sel == "0":
-            self.state = "main_menu"
+            self.state = "inventory_menu"
             return
         if sel in self.player.equip:
             part = sel
@@ -537,6 +606,7 @@ class Engine():
                 self.player.add_item(sel)
                 self.player.gold -= items[sel]['value']
                 self.text("{} bought {}".format(self.player.name, sel))
+                world[self.location]['shop'] = self.shop.get_data()
 
     def shop_sell(self):
         sel = self.inventory_selection(self.player.inventory, "shop_menu", "Shop's Gold: {}".format(self.shop.gold))
@@ -547,12 +617,13 @@ class Engine():
                 self.shop.gold -= items[sel]['value']
                 self.player.gold += items[sel]['value']
                 self.text("{} sold {}".format(self.player.name, sel))
+                world[self.location]['shop'] = self.shop.get_data()
 
     def shop_menu(self):
         self.clear_text()
         print("(1) Buy\n(2) Sell\n(0) Leave")
         sel = input(": ")
-        if sel == "0": self.state = "main_menu"
+        if sel == "0": self.state = "location_menu"
         elif sel == "1":
             self.state = "shop_buy"
             self.text("Let me show you what I have")
@@ -578,7 +649,7 @@ class Engine():
         print("(0) Back")
 
         sel = input(": ")
-        if sel == "0": self.state = "main_menu"
+        if sel == "0": self.state = "location_menu"
         elif sel == "8" and "north" in world[self.location]['travel']:
             self.state = "main_menu"
             self.location = world[self.location]['travel']['north']
@@ -675,11 +746,11 @@ class Engine():
 
     def update_background(self):
         for l in world:
-            if random.randint(0, 1000) < 10:
+            if random.randint(0, 1000) < world[l]['restock']:
                 gold = world[l]['shop']['gold']
                 markup = world[l]['shop']['markup']
-                if random.randint(0, 1000) < 5: gold += random.randint(-gold/4, gold/4)
-                if random.randint(0, 1000) < 1: markup += random.randrange(-0.2, 0.2)
+                if random.randint(0, 1000) < 2: gold += random.randint(-gold/4, gold/4)
+                if random.randint(0, 1000) < 1: markup += random.randrange(-0.01, 0.01)
                 S = Shop(gold, markup)
                 world[l]['shop'] = S.get_data()
         self.shop.set_data(world[self.location]['shop'])
@@ -695,6 +766,8 @@ class Engine():
         elif self.state == "shop_sell": self.shop_sell()
         elif self.state == "shop_menu": self.shop_menu()
         elif self.state == "travel_menu": self.travel_menu()
+        elif self.state == "inventory_menu": self.inventory_menu()
+        elif self.state == "location_menu": self.location_menu()
         elif self.state == "main_menu": self.main_menu()
         elif self.state == "set_speed": self.set_speed()
         elif self.state == "set_pause": self.set_pause()

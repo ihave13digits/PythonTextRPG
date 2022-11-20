@@ -1,5 +1,7 @@
 quest = {
         'intro' : {
+            'discovered' : True,
+            'completed' : False,
             'part' : '0',
             '0' : {'part' : '1', 'prompt' : "Stranger: Adventurer, welcome to these parts.  What's your name?"},
             '1' : {
@@ -18,10 +20,12 @@ quest = {
                     }
             },
             '5' : {'part' : '6', 'prompt' : "Hodan: Off ye go, I've got to get back to the wife, or I'll never hear the end of it!"},
-            '6' : {'state' : 'main_menu'},
+            '6' : {'completed' : True, 'state' : 'main_menu', 'reward' : {'stat':'exp', 'value':50}},
         },
         'quest' : {
-            'part' : 0,
+            'discovered' : False,
+            'completed' : False,
+            'part' : '0',
             '0' : {
                 'prompt' : "",
                 'option' : [],
