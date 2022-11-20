@@ -16,6 +16,10 @@ class Entity():
         self.exp = 0
         self.level_up = mobs[RACE]['lup']
         self.experience = 0
+        self.poisoned = False
+        self.confused = False
+        self.stunned = False
+        self.burned = False
         
         self.hp = mobs[RACE]['hp']
         self.HP = mobs[RACE]['hp']
@@ -28,41 +32,42 @@ class Entity():
         self.gold = 100
 
         self.equip = {
-                "hand_r" : 'nothing',
-                "hand_l" : 'nothing',
-                "head" : 'nothing',
-                "neck" : 'nothing',
-                "torso" : 'shirt',
-                "waist" : 'nothing',
-                "arms" : 'nothing',
-                "legs" : 'pants',
-                "hands" : 'nothing',
-                "feet" : 'nothing',
+                "left hand"  : 'nothing',
+                "right hand" : 'nothing',
+                "head"       : 'nothing',
+                "neck"       : 'nothing',
+                "shoulders"  : 'nothing',
+                "torso"      : 'shirt',
+                "waist"      : 'nothing',
+                "arms"       : 'nothing',
+                "legs"       : 'pants',
+                "hands"      : 'nothing',
+                "feet"       : 'nothing',
             }
         self.spells = {}
         self.inventory = {}
 
     def get_data(self):
         return {
-                "name" : self.name,
-                "race" : self.race,
-                "job" : self.job,
-                "points" : self.points,
-                "level" : self.level,
-                "exp" : self.exp,
-                "level_up" : self.level_up,
+                "name"       : self.name,
+                "race"       : self.race,
+                "job"        : self.job,
+                "points"     : self.points,
+                "level"      : self.level,
+                "exp"        : self.exp,
+                "level_up"   : self.level_up,
                 "experience" : self.experience,
-                "hp" : self.hp,
-                "HP" : self.HP,
-                "mp" : self.mp,
-                "MP" : self.MP,
-                "magic" : self.magic,
-                "attack" : self.attack,
-                "defense" : self.defense,
-                "gold" : self.gold,
-                "equip" : self.equip,
-                "spells" : self.spells,
-                "inventory" : self.inventory,
+                "hp"         : self.hp,
+                "HP"         : self.HP,
+                "mp"         : self.mp,
+                "MP"         : self.MP,
+                "magic"      : self.magic,
+                "attack"     : self.attack,
+                "defense"    : self.defense,
+                "gold"       : self.gold,
+                "equip"      : self.equip,
+                "spells"     : self.spells,
+                "inventory"  : self.inventory,
             }
 
     def set_data(self, data):
@@ -93,7 +98,7 @@ class Entity():
         return bonus
 
     def get_attack_bonus(self):
-        return items[self.equip['hand_l']]['attack']+items[self.equip['hand_r']]['attack']
+        return items[self.equip['left hand']]['attack']+items[self.equip['right hand']]['attack']
 
     def get_defense_bonus(self):
         bonus = 0
@@ -121,10 +126,12 @@ class Entity():
 
     def use_spell(self, spell, entity):
         if self.mp >= magic[spell]['cost']:
-            if "hp" in magic[spell]:
-                entity.hp = min(entity.hp+(magic[spell]["hp"]+self.get_magic_bonus()), entity.HP)
-            if "damage" in magic[spell]:
-                entity.take_damage(self.get_magic_attack(spell))
+            if "hp" in magic[spell]: entity.hp = min(entity.hp+(magic[spell]["hp"]+self.get_magic_bonus()), entity.HP)
+            if "damage" in magic[spell]: entity.take_damage(self.get_magic_attack(spell))
+            if "poisoned" in magic[spell]: self.poisoned = magic[spell]['poisoned']
+            if "confused" in magic[spell]: self.confused = magic[spell]['confused']
+            if "stunned" in magic[spell]: self.stunned = magic[spell]['stunned']
+            if "burned" in magic[spell]: self.burned = magic[spell]['burned']
             self.mp -= magic[spell]['cost']
 
     def add_item(self, item):

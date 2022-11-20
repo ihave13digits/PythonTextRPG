@@ -26,28 +26,38 @@ items = {
         'potion of mana'            : {"type" : "potion", "MP" : 1, "value" : 25000, "rarity" : 5, "count" : 2},
 
         # Scroll
-        'scroll of fireball'        : {"type" : "scroll", "spell" : "fireball", "value" : 5000, "rarity" : 2, "count" : 2},
-        'scroll of lightning bolt'  : {"type" : "scroll", "spell" : "lightning bolt", "value" : 5000, "rarity" : 2, "count" : 2},
-        'scroll of flash flood'     : {"type" : "scroll", "spell" : "flash flood", "value" : 5000, "rarity" : 2, "count" : 2},
-        'scroll of ground collapse' : {"type" : "scroll", "spell" : "ground collapse", "value" : 5000, "rarity" : 2, "count" : 2},
-        'scroll of harm'            : {"type" : "scroll", "spell" : "harm", "value" : 5000, "rarity" : 2, "count" : 2},
-        'scroll of heal'            : {"type" : "scroll", "spell" : "heal", "value" : 5000, "rarity" : 2, "count" : 2},
+        'scroll of firestorm'         : {"type" : "scroll", "spell" : "firestorm", "value" : 5000, "rarity" : 5, "count" : 2},
+        'scroll of lightning barrage' : {"type" : "scroll", "spell" : "lightning barrage", "value" : 5000, "rarity" : 5, "count" : 2},
+        'scroll of tsunami'           : {"type" : "scroll", "spell" : "tsunami", "value" : 5000, "rarity" : 5, "count" : 2},
+        'scroll of earthquake'        : {"type" : "scroll", "spell" : "earthquake", "value" : 5000, "rarity" : 5, "count" : 2},
+        'scroll of destroy'           : {"type" : "scroll", "spell" : "destroy", "value" : 5000, "rarity" : 5, "count" : 2},
+        'scroll of fireblast'         : {"type" : "scroll", "spell" : "fireblast", "value" : 2500, "rarity" : 10, "count" : 2},
+        'scroll of lightning'         : {"type" : "scroll", "spell" : "lightning", "value" : 2500, "rarity" : 10, "count" : 2},
+        'scroll of flash flood'       : {"type" : "scroll", "spell" : "flash flood", "value" : 2500, "rarity" : 10, "count" : 2},
+        'scroll of fissure'           : {"type" : "scroll", "spell" : "fissure", "value" : 2500, "rarity" : 10, "count" : 2},
+        'scroll of kill'              : {"type" : "scroll", "spell" : "kill", "value" : 2500, "rarity" : 10, "count" : 2},
+        'scroll of fireball'          : {"type" : "scroll", "spell" : "fireball", "value" : 1000, "rarity" : 25, "count" : 2},
+        'scroll of lightning bolt'    : {"type" : "scroll", "spell" : "lightning bolt", "value" : 1000, "rarity" : 25, "count" : 2},
+        'scroll of water burst'       : {"type" : "scroll", "spell" : "water burst", "value" : 1000, "rarity" : 25, "count" : 2},
+        'scroll of ground collapse'   : {"type" : "scroll", "spell" : "ground collapse", "value" : 1000, "rarity" : 25, "count" : 2},
+        'scroll of harm'              : {"type" : "scroll", "spell" : "harm", "value" : 1000, "rarity" : 25, "count" : 2},
+        'scroll of heal'              : {"type" : "scroll", "spell" : "heal", "value" : 1000, "rarity" : 25, "count" : 2},
 
         ## Arms
         
         # Weapon
-        'club'                      : {"type" : "arms", "attack" : 1, "defense" : 0, "value" : 50, "rarity" : 250, "count" : 2, "slot" : "hand_"},
-        'mace'                      : {"type" : "arms", "attack" : 3, "defense" : 0, "value" : 250, "rarity" : 150, "count" : 2, "slot" : "hand_"},
-        'greatmace'                 : {"type" : "arms", "attack" : 5, "defense" : 1, "value" : 1000, "rarity" : 50, "count" : 2, "slot" : "hand_"},
-        'war axe'                   : {"type" : "arms", "attack" : 4, "defense" : 2, "value" : 1000, "rarity" : 100, "count" : 2, "slot" : "hand_"},
-        'dagger'                    : {"type" : "arms", "attack" : 1, "defense" : 0, "value" : 250, "rarity" : 250, "count" : 2, "slot" : "hand_"},
-        'shortsword'                : {"type" : "arms", "attack" : 2, "defense" : 1, "value" : 500, "rarity" : 150, "count" : 2, "slot" : "hand_"},
-        'longsword'                 : {"type" : "arms", "attack" : 3, "defense" : 1, "value" : 750, "rarity" : 100, "count" : 2, "slot" : "hand_"},
-        'greatsword'                : {"type" : "arms", "attack" : 4, "defense" : 2, "value" : 1000, "rarity" : 50, "count" : 2, "slot" : "hand_"},
+        'club'                      : {"type" : "arms", "attack" : 1, "defense" : 0, "value" : 50, "rarity" : 250, "count" : 2, "slot" : "hand"},
+        'mace'                      : {"type" : "arms", "attack" : 3, "defense" : 0, "value" : 250, "rarity" : 150, "count" : 2, "slot" : "hand"},
+        'greatmace'                 : {"type" : "arms", "attack" : 5, "defense" : 1, "value" : 1000, "rarity" : 50, "count" : 2, "slot" : "hand"},
+        'war axe'                   : {"type" : "arms", "attack" : 4, "defense" : 2, "value" : 1000, "rarity" : 100, "count" : 2, "slot" : "hand"},
+        'dagger'                    : {"type" : "arms", "attack" : 1, "defense" : 0, "value" : 250, "rarity" : 250, "count" : 2, "slot" : "hand"},
+        'shortsword'                : {"type" : "arms", "attack" : 2, "defense" : 1, "value" : 500, "rarity" : 150, "count" : 2, "slot" : "hand"},
+        'longsword'                 : {"type" : "arms", "attack" : 3, "defense" : 1, "value" : 750, "rarity" : 100, "count" : 2, "slot" : "hand"},
+        'greatsword'                : {"type" : "arms", "attack" : 4, "defense" : 2, "value" : 1000, "rarity" : 50, "count" : 2, "slot" : "hand"},
         # Shield
-        'buckler'                   : {"type" : "arms", "attack" : 1, "defense" : 2, "value" : 50, "rarity" : 100, "count" : 2, "slot" : "hand_"},
-        'shield'                    : {"type" : "arms", "attack" : 1, "defense" : 3, "value" : 100, "rarity" : 50, "count" : 2, "slot" : "hand_"},
-        'tower shield'              : {"type" : "arms", "attack" : 1, "defense" : 5, "value" : 250, "rarity" : 25, "count" : 2, "slot" : "hand_"},
+        'buckler'                   : {"type" : "arms", "attack" : 1, "defense" : 2, "value" : 50, "rarity" : 100, "count" : 2, "slot" : "hand"},
+        'shield'                    : {"type" : "arms", "attack" : 1, "defense" : 3, "value" : 100, "rarity" : 50, "count" : 2, "slot" : "hand"},
+        'tower shield'              : {"type" : "arms", "attack" : 1, "defense" : 5, "value" : 250, "rarity" : 25, "count" : 2, "slot" : "hand"},
         
         ## Armor
         
