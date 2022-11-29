@@ -3,13 +3,15 @@ import random
 from mob import *
 from item import *
 from magic import *
+from output import *
 
 class Entity():
 
-    def __init__(self, NAME, RACE, AI=True):
+    def __init__(self, NAME, RACE, SEX, AI=True):
         self.is_ai = AI
         self.name = NAME
         self.race = RACE
+        self.sex = SEX
         self.job = ""
         self.level = 1
         self.points = 0
@@ -28,6 +30,7 @@ class Entity():
         self.magic = mobs[RACE]['mag']
         self.attack = mobs[RACE]['atk']
         self.defense = mobs[RACE]['def']
+        self.charisma = mobs[RACE]['cha']
 
         self.gold = 100
 
@@ -64,6 +67,7 @@ class Entity():
                 "magic"      : self.magic,
                 "attack"     : self.attack,
                 "defense"    : self.defense,
+                "charisma"   : self.charisma,
                 "gold"       : self.gold,
                 "equip"      : self.equip,
                 "spells"     : self.spells,
@@ -86,6 +90,7 @@ class Entity():
         self.magic = data["magic"]
         self.attack = data["attack"]
         self.defense = data["defense"]
+        self.charisma = data['charisma']
         self.gold = data["gold"]
         self.equip = data["equip"]
         self.spells = data["spells"]
@@ -115,6 +120,14 @@ class Entity():
     def get_armor(self):
         return self.defense+self.get_defense_bonus()
 
+    def take_stat_damage(self):
+        if self.burned:
+            T.text("{} took {} burn damage".format(self.name, 1))
+            self.take_damage(1)
+        if self.poisoned:
+            T.text("{} took {} poison damage".format(self.name, 1))
+            self.take_damage(1)
+
     def take_damage(self, dmg):
         self.hp -= max(dmg-self.get_armor(), 1)
 
@@ -127,11 +140,11 @@ class Entity():
     def use_spell(self, spell, entity):
         if self.mp >= magic[spell]['cost']:
             if "hp" in magic[spell]: entity.hp = min(entity.hp+(magic[spell]["hp"]+self.get_magic_bonus()), entity.HP)
-            if "damage" in magic[spell]: entity.take_damage(self.get_magic_attack(spell))
-            if "poisoned" in magic[spell]: self.poisoned = magic[spell]['poisoned']
-            if "confused" in magic[spell]: self.confused = magic[spell]['confused']
-            if "stunned" in magic[spell]: self.stunned = magic[spell]['stunned']
-            if "burned" in magic[spell]: self.burned = magic[spell]['burned']
+            if "damage" in magic[spell]: entity.take_damage(self.get_magic_damage(spell))
+            if "poisoned" in magic[spell]: entity.poisoned = magic[spell]['poisoned']
+            if "confused" in magic[spell]: entity.confused = magic[spell]['confused']
+            if "stunned" in magic[spell]: entity.stunned = magic[spell]['stunned']
+            if "burned" in magic[spell]: entity.burned = magic[spell]['burned']
             self.mp -= magic[spell]['cost']
 
     def add_item(self, item):
@@ -239,8 +252,6 @@ class Entity():
             self.points += 1
             if self.is_ai:
                 self.auto_level()
-            else:
-                input("{} leveled up!".format(self.name))
     
     def auto_level(self):
         while self.points > 0:
@@ -263,24 +274,79 @@ class Entity():
             self.points -= 1
 
     def auto_equip(self):
+        to_cull = []
         to_equip = []
         for i in self.inventory:
             for slot in self.equip:
                 if 'slot' in items[i]:
                     if items[i]['slot'] in slot:
                         to_equip.append([i, slot])
+        for i in range(len(to_equip)):
+            for j in range(len(to_equip)):
+                if to_equip[i][0] == to_equip[j][0] and to_equip[i][1] == to_equip[j][1] :
+                    to_cull = to_equip[i]
+                    break
+        if to_cull:
+            to_equip.remove(to_cull)
         for i in to_equip:
             self.equip_item(i[0], i[1])
 
     def randomize(self):
+        equip_head = []
+        equip_neck = []
+        equip_shoulders = []
+        equip_torso = []
+        equip_waist = []
+        equip_arms = []
+        equip_hands = []
+        equip_legs = []
+        equip_feet = []
+        scrolls = []
+        weapons = []
+        misc = []
         self.hp = self.HP
         self.mp = self.MP
         self.inventory = {}
         self.gold += random.randint(0, 15)*10
         for i in items:
             if i != "nothing":
-                if random.randint(0, 1500) < items[i]['rarity']:
-                    M = int(items[i]['count']/2)
-                    if M > 1:
-                        self.inventory[i] = random.randint(1, M)
+                if random.randint(0, 2500) < items[i]['rarity']:
+                    if items[i]['type'] == "scroll": scrolls.append(i)
+                    elif items[i]['type'] == "arms": weapons.append(i)
+                    elif items[i]['type'] == "food" or items[i]['type'] == "potion": misc.append(i)
+                    elif items[i]['type'] == "armor":
+                        if items[i]['slot'] == "head": equip_head.append(i)
+                        if items[i]['slot'] == "neck": equip_neck.append(i)
+                        if items[i]['slot'] == "shoulders": equip_shoulders.append(i)
+                        if items[i]['slot'] == "torso": equip_torso.append(i)
+                        if items[i]['slot'] == "waist": equip_waist.append(i)
+                        if items[i]['slot'] == "arms": equip_arms.append(i)
+                        if items[i]['slot'] == "hands": equip_hands.append(i)
+                        if items[i]['slot'] == "legs": equip_legs.append(i)
+                        if items[i]['slot'] == "feet": equip_feet.append(i)
+        # Food / Potions
+        for i in misc:
+            if random.randint(0, 100) < 50: self.add_item(i)
+        # Magic
+        for i in range(self.magic):
+            s = random.randint(0, len(scrolls))
+            if random.randint(0, 100) < 50:
+                try:
+                    self.add_spell(items[scrolls[s]]['spell'])
+                    self.add_item(scrolls[s])
+                    scrolls.remove(s)
+                except: pass
+        # Weapon
+        if random.randint(0, 100) < 75 and weapons: self.add_item(random.choice(weapons))
+        # Armor
+        if random.randint(0, 100) < 75 and equip_head: self.add_item(random.choice(equip_head))
+        if random.randint(0, 100) < 75 and equip_neck: self.add_item(random.choice(equip_neck))
+        if random.randint(0, 100) < 75 and equip_shoulders: self.add_item(random.choice(equip_shoulders))
+        if random.randint(0, 100) < 75 and equip_torso: self.add_item(random.choice(equip_torso))
+        if random.randint(0, 100) < 75 and equip_waist: self.add_item(random.choice(equip_waist))
+        if random.randint(0, 100) < 75 and equip_arms: self.add_item(random.choice(equip_arms))
+        if random.randint(0, 100) < 75 and equip_hands: self.add_item(random.choice(equip_hands))
+        if random.randint(0, 100) < 75 and equip_legs: self.add_item(random.choice(equip_legs))
+        if random.randint(0, 100) < 75 and equip_feet: self.add_item(random.choice(equip_feet))
+        
         self.auto_equip()
