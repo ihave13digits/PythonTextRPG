@@ -21,17 +21,20 @@ class Text():
     def clear_text(self):
         system(self.clear_cmd)
 
-    def get_colored_text(self, txt, c=Color(255, 255, 255)):
-        if self.clear_cmd == "clear":
-            return "\x1b[{};2;{};{};{}m".format(38, c.r, c.g, c.b) + str(txt) + '\x1b[0m'
+    def get_colored_text(self, txt, c=Color(255, 255, 255), style=38):
+        if not platform.startswith('win32'):
+            return "\x1b[{};2;{};{};{}m".format(style, c.r, c.g, c.b) + str(txt) + '\x1b[0m'
         else:
             return txt
 
-    def expanded_text(self, a, b, g=" "):
-        print("{}{}{}".format(a, g*(self.menu_width-(len(a)+len(b))), b))
+    def expanded_text(self, a, b, g=" ", c=Color(255, 255, 255)):
+        self.print("{}{}{}".format(a, g*(self.menu_width-(len(a)+len(b))), b), "\n", c)
 
     def print(self, txt="", end="\n", c=Color(255,255,255)):
-        print(self.get_colored_text(txt, c), end)
+        print(self.get_colored_text(txt, c), end=end)
+
+    def input(self, txt, c=Color(255,255,255)):
+        return input(self.get_colored_text(txt, c, 5))
 
     def text(self, text):
         self.clear_text()
