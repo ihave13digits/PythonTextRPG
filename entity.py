@@ -1,6 +1,7 @@
 import random
 
 from mob import *
+from job import *
 from item import *
 from magic import *
 from output import *
@@ -54,6 +55,7 @@ class Entity():
         return {
                 "name"       : self.name,
                 "race"       : self.race,
+                "sex"        : self.sex,
                 "job"        : self.job,
                 "points"     : self.points,
                 "level"      : self.level,
@@ -77,6 +79,7 @@ class Entity():
     def set_data(self, data):
         self.name = data["name"]
         self.race = data["race"]
+        self.sex = data['sex']
         self.job = data["job"]
         self.points = data["points"]
         self.level = data["level"]

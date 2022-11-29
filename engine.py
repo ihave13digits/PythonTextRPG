@@ -2,6 +2,7 @@ import time, random
 
 from names import *
 from mob import *
+from job import *
 from magic import *
 from item import *
 from world import *
@@ -26,8 +27,8 @@ class Engine():
         self.mob = Entity("human", "human", "m")
         self.shop = Shop()
         self.c_text1 = Color(255, 255, 255)
-        self.c_text2 = Color(128, 128, 128)
-        self.c_count = Color(64, 64, 64)
+        self.c_text2 = Color(100, 100, 100)
+        self.c_count = Color(80, 80, 80)
         self.c_attack = Color(255, 0, 0)
         self.c_defense = Color(0, 255, 0)
         self.c_magic = Color(0, 0, 255)
@@ -130,7 +131,7 @@ class Engine():
                     if "defense" in items[i]:
                         s_def = " [{}]".format(items[i]['defense'])
                     if "magic" in items[i]:
-                        s_def = " [{}]".format(items[i]['magic'])
+                        s_mgc = " [{}]".format(items[i]['magic'])
                     margin = T.menu_width-(len(i)+len(str(inventory[i]))+len(s_value)+len(s_atk)+len(s_def)+len(s_mgc))
                     print("[{}] {}{}{}{}{}{}".format(
                         T.get_colored_text(inventory[i], self.c_count),
@@ -142,7 +143,7 @@ class Engine():
                         T.get_colored_text(s_mgc, self.c_magic)
                         ))
             T.print("\n(1) Food\n(2) Potion\n(3) Scroll\n(4) Arms\n(5) Armor\n(0) Back\n", "\n", self.c_text2)
-            sel = input(": ")
+            sel = T.input(": ")
             if sel == "0":
                 self.state = state
                 selecting = False
@@ -175,8 +176,10 @@ class Engine():
         output_menu += "(0) Exit"
         T.print(output_menu, "\n", self.c_text2)
 
-        sel = input(": ")
-        if sel == "0": self.running = False
+        sel = T.input(": ")
+        if sel == "0":
+            self.running = False
+            T.clear_text()
         elif sel == "1": self.state = "select_race"
         elif sel == "2" and can_continue:
             self.load_data()
@@ -191,7 +194,7 @@ class Engine():
     def main_menu(self):
         T.clear_text()
         T.print("(1) Battle\n(2) Stats\n(3) Inventory\n(4) Location\n(5) Quests\n(6) Settings\n(0) Exit", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0": self.state = "exit"
         elif sel == "1":
             self.ai_turn = random.choice([True, False])
@@ -206,7 +209,7 @@ class Engine():
     def inventory_menu(self):
         T.clear_text()
         T.print("(1) Items\n(2) Equip\n(3) Craft\n(0) Back", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0": self.state = "main_menu"
         elif sel == "1": self.state = "item"
         elif sel == "2": self.state = "equip"
@@ -215,7 +218,7 @@ class Engine():
     def location_menu(self):
         T.clear_text()
         T.print("(1) Travel\n(2) Shop\n(0) Back", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0": self.state = "main_menu"
         elif sel == "1": self.state = "travel_menu"
         elif sel == "2": self.state = "shop_menu"
@@ -224,12 +227,13 @@ class Engine():
         T.text(T.get_colored_text("Are you sure you want to exit?", self.c_text1))
         T.clear_text()
         T.print("(1) Exit Without Saving\n(2) Save And Exit\n(0) Cancel", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0": self.state = "main_menu"
         elif sel == "1": self.running = False
         elif sel == "2":
             self.save_data()
             self.running = False
+        T.clear_text()
 
     ##
     ### Quest
@@ -238,7 +242,7 @@ class Engine():
     def freetype(self, data):
         if data['object'] == 'player':
             if data['variable'] == "name":
-                self.player.name = input(": ")
+                self.player.name = T.input(": ")
 
     def quest_menu(self):
         global quest
@@ -260,8 +264,8 @@ class Engine():
         T.text(quest[self.selected_quest][part]['prompt'])
         if 'option' in quest[self.selected_quest][part]:
             for o in quest[self.selected_quest][part]['option']:
-                T.print("({}) {}".format(o, quest[self.selected_quest][part]['option'][o]['prompt']), "\n", c_)
-            sel = input(": ")
+                T.print("({}) {}".format(o, quest[self.selected_quest][part]['option'][o]['prompt']), "\n", self.c_text1)
+            sel = T.input(": ")
             if sel in quest[self.selected_quest][part]['option']:
                 if 'reward' in quest[self.selected_quest][part]['option'][sel]:
                     stat = quest[self.selected_quest][part]['option'][sel]['reward']['stat']
@@ -285,7 +289,7 @@ class Engine():
                     cplt = "Completed"
                 T.print("{}{}{}".format(qst, " "*(T.menu_width-(len(qst)+len(cplt))), cplt), "\n", self.c_text2)
         T.print("\n(0) Back\n", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0":
             self.state = "main_menu"
             if quest[self.selected_quest]['location'] == self.location:
@@ -301,7 +305,7 @@ class Engine():
         entity = self.player
         T.clear_text()
         T.print("(1) {}\n(2) {}\n(0) Back".format(self.player.name, self.mob.name), "\n", self.c_text2)
-        select = input(": ")
+        select = T.input(": ")
         if select == "0": return
         if select == "1": entity = self.player
         if select == "2": entity = self.mob
@@ -311,7 +315,7 @@ class Engine():
         hand = "right hand"
         T.clear_text()
         T.print("(1) Left Hand\n(2) Right Hand\n(0) Back", "\n", self.c_text2)
-        select = input(": ")
+        select = T.input(": ")
         if select == "0": return
         if select == "1": hand = "left hand"
         if select == "2": hand = "right hand"
@@ -326,7 +330,7 @@ class Engine():
         entity = self.mob
         T.clear_text()
         T.print("(1) {}\n(2) {}\n(0) Back".format(self.player.name, self.mob.name), "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0":
             self.state = "battle"
             return
@@ -339,7 +343,7 @@ class Engine():
             T.print("[{}] {}{}{}".format(self.player.spells[i], i, " "*margin, magic[i]['cost']), "\n", self.c_text2)
         T.print("(0) Back", "\n", self.c_text2)
 
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0":
             self.state = "battle"
             return
@@ -371,7 +375,7 @@ class Engine():
                 self.mob.add_item(self.mob.equip[item])
         for item in self.mob.inventory:
             T.print("(1) Take {}\n(0) Skip".format(item), "\n", self.c_text2)
-            sel = input(": ")
+            sel = T.input(": ")
             if sel == "0": pass
             else:
                 plural = ""
@@ -467,7 +471,7 @@ class Engine():
         
     def battle_player(self):
         T.print("(1) Attack\n(2) Stats\n(3) Magic\n(4) Item\n(0) Run", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0": self.state = "main_menu"
         elif sel == "1": self.battle_attack()
         elif sel == "2": self.battle_stats()
@@ -511,6 +515,7 @@ class Engine():
         T.print("Location:{}{}".format(" "*(T.menu_width-(len("Location:")+len(self.location))), self.location), "\n", self.c_text1)
         T.print("\nName:{}{}".format(" "*(T.menu_width-(len("Name:")+len(entity.name))), entity.name), "\n", self.c_text1)
         T.print("Race:{}{}".format(" "*(T.menu_width-(len("Race:")+len(entity.race))), entity.race), "\n", self.c_text1)
+        T.print("Sex:{}{}".format(" "*(T.menu_width-(len("Sex:")+len(entity.sex))), entity.sex), "\n", self.c_text1)
         T.print("Job:{}{}".format(" "*(T.menu_width-(len("Job:")+len(entity.job))), entity.job), "\n", self.c_text1)
         T.print("\nGold:{}{}".format(" "*(T.menu_width-(len("Gold:")+len(str(entity.gold)))), entity.gold), "\n", self.c_text1)
         T.print("Level:{}{}".format(" "*(T.menu_width-(len("Level:")+len(str(entity.level)))), entity.level), "\n", self.c_text1)
@@ -524,7 +529,7 @@ class Engine():
 
     def entity_stats(self, entity, menu):
         self.display_stats(entity)
-        sel = input("\n: ")
+        sel = T.input("\n: ")
         spending_points = bool(entity.points > 0)
         while spending_points > 0:
             if entity.points <= 0:
@@ -533,7 +538,7 @@ class Engine():
                 return
             self.display_stats(entity)
             T.print("(1) Increase Magic\n(2) Increase Attack\n(3) Increase Defense\n(4) Charisma\n(5) Increase Health\n(6) Increase Mana\n(0) Back", "\n", self.c_text2)
-            sel = input(": ")
+            sel = T.input(": ")
             if sel == "0":
                 spending_points = False
             elif sel == "1":
@@ -561,7 +566,7 @@ class Engine():
     def select_race(self):
         T.clear_text()
         R = self.player.race
-        print(R, "\n")
+        T.print(R, "\n\n", self.c_text1)
         T.expanded_text("Health:", str(mobs[R]['hp']))
         T.expanded_text("Magic:", str(mobs[R]['mp']))
         T.expanded_text("Attack:", str(mobs[R]['atk']))
@@ -569,19 +574,27 @@ class Engine():
         T.expanded_text("Charisma:", str(mobs[R]['cha']))
         print()
         for p in playable_mobs:
-            print("({})".format(p))
-        print("(0){}Continue".format(" "*(T.menu_width-(len("(0)")+len("Continue")))))
-        sel = input(": ")
+            T.print("({})".format(p), "\n", self.c_text2)
+        T.print("(0){}Continue".format(" "*(T.menu_width-(len("(0)")+len("Continue")))), "\n", self.c_text2)
+        sel = T.input(": ")
         if sel in playable_mobs:
             self.player.race = sel
         if sel == "0":
+            self.state = "select_sex"
+
+    def select_sex(self):
+        T.clear_text()
+        T.print("(m) Male\n(f) Female", "\n", self.c_text2)
+        sel = T.input(": ")
+        if sel == "m" or sel == "f":
+            self.player.sex = sel
             self.state = "new_game"
 
     """
     def select_job(self):
         T.clear_text()
         print("(0) Back")
-        sel = input(": ")
+        sel = T.input(": ")
         if sel in jobs:
             self.player.job = sel
         if sel == "0":
@@ -603,7 +616,7 @@ class Engine():
             if self.player.can_craft_item(i):
                 T.print("{}".format(i), "\n", self.c_text2)
         T.print("(0) Back", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0":
             self.state = "inventory_menu"
             return
@@ -618,9 +631,9 @@ class Engine():
         part = ""
         T.clear_text()
         for part in self.player.equip:
-            T.print("{}{}({})".format(part," "*(T.menu_width-(len(part)+len(self.player.equip[part]))),self.player.equip[part]), "\n", self.c_text2)
+            T.print("({}){}{}".format(part," "*(T.menu_width-(len(part)+len(self.player.equip[part]))),self.player.equip[part]), "\n", self.c_text2)
         T.print("(0) Back", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0":
             self.state = "inventory_menu"
             return
@@ -633,7 +646,7 @@ class Engine():
                     margin = T.menu_width - ( len(i) + len(str(self.player.inventory[i])) + len(str(items[i]['value'])) )
                     T.print("[{}] {}{}{}".format(self.player.inventory[i], i, " "*margin, items[i]['value']), "\n", self.c_text2)
         T.print("(1) nothing\n(0) Back", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0":
             self.state = "equip"
             return
@@ -671,7 +684,7 @@ class Engine():
     def shop_menu(self):
         T.clear_text()
         T.print("(1) Buy\n(2) Sell\n(0) Leave", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0": self.state = "location_menu"
         elif sel == "1":
             self.state = "shop_buy"
@@ -698,7 +711,7 @@ class Engine():
             T.print("(4) {}".format(world[self.location]['travel']['west']), "\n", self.c_text2)
         T.print("(0) Back", "\n", self.c_text2)
 
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0": self.state = "location_menu"
         elif sel == "8" and "north" in world[self.location]['travel']:
             self.state = "main_menu"
@@ -720,7 +733,7 @@ class Engine():
     def set_speed(self):
         T.clear_text()
         T.print("(1) Fast\n(2) Normal\n(3) Slow\n(0) Back", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0": self.state = "settings"
         elif sel == "1":
             T.text_speed = 0.01
@@ -735,7 +748,7 @@ class Engine():
     def set_pause(self):
         T.clear_text()
         T.print("(1) Fast\n(2) Medium\n(3) Slow\n(4) Wait\n(0) Back", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0": self.state = "settings"
         elif sel == "1":
             T.text_pause = 0.15
@@ -752,7 +765,7 @@ class Engine():
     def set_margin(self):
         T.clear_text()
         T.print("(1) 1\n(2) 3\n(3) 5\n(0) Back", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0": self.state = "settings"
         elif sel == "1":
             T.text_margin = 1
@@ -767,27 +780,23 @@ class Engine():
     def set_width(self):
         T.clear_text()
         T.print("(1) 32\n(2) 48\n(3) 64\n(0) Back", "\n", self.c_text2)
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0": self.state = "settings"
         elif sel == "1":
             T.menu_width = 48
-            T.text("Sample text to show margin")
+            T.text("Sample text to show margin.  Sample text to show margin.  Sample text to show margin.  Sample text to show margin.  Sample text to show margin.  ")
         elif sel == "2":
             T.menu_width = 56
-            T.text("Sample text to show margin")
+            T.text("Sample text to show margin.  Sample text to show margin.  Sample text to show margin.  Sample text to show margin.  Sample text to show margin.  ")
         elif sel == "3":
             T.menu_width = 64
-            T.text("Sample text to show margin")
-
-    def set_setting(self, setting, settings):
-        for s in settings:
-            print("({}) {}".format(settings[s]['select'], settings[s]['prompt']))
+            T.text("Sample text to show margin.  Sample text to show margin.  Sample text to show margin.  Sample text to show margin.  Sample text to show margin.  ")
 
     def settings(self):
         T.clear_text()
         T.print("(1) Text Speed\n(2) Text Pause\n(3) Clear Margin\n(4) Menu Width\n(0) Back", "\n", self.c_text2)
 
-        sel = input(": ")
+        sel = T.input(": ")
         if sel == "0": self.state = "main_menu"
         elif sel == "1": self.state = "set_speed"
         elif sel == "2": self.state = "set_pause"
@@ -797,10 +806,9 @@ class Engine():
     def update_background(self):
         for l in world:
             if random.randint(0, 1000) < world[l]['restock']:
-                gold = world[l]['shop']['gold']
-                markup = world[l]['shop']['markup']
-                if random.randint(0, 1000) < 2: gold += random.randint(-gold/4, gold/4)
-                S = Shop(gold, markup)
+                S = Shop(0, 0)
+                S.set_data(world[l]['shop'])
+                S.restock()
                 world[l]['shop'] = S.get_data()
         self.shop.set_data(world[self.location]['shop'])
 
@@ -825,6 +833,7 @@ class Engine():
         elif self.state == "set_width": self.set_width()
         elif self.state == "settings": self.settings()
         elif self.state == "select_race": self.select_race()
+        elif self.state == "select_sex": self.select_sex()
         elif self.state == "new_game": self.new_game()
         elif self.state == "intro": self.intro()
         elif self.state == "exit": self.exit_menu()
