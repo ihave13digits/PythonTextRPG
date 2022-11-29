@@ -1,4 +1,4 @@
-from os import system
+from os import system, environ
 from sys import stdout, platform
 import textwrap, time
 
@@ -12,17 +12,25 @@ class Text():
         self.menu_width = 48
         self.text_margin = 3
         self.clear_cmd = ""
+        self.color_enabled = False
+        
+        self.init_color()
 
-        if platform.startswith('win32'):
+    def init_color(self):
+        p = platform
+        t = bool(hasattr(stdout, 'isatty') and stdout.isatty())
+        if p.startswith('win32'):
             self.clear_cmd = 'cls'
         else:
             self.clear_cmd = 'clear'
+            if ('ANSICON' not in environ or environ['TERM'] == "xterm-256color") and t:
+                self.color_enabled = True
 
     def clear_text(self):
         system(self.clear_cmd)
 
     def get_colored_text(self, txt, c=Color(255, 255, 255), style=38):
-        if not platform.startswith('win32'):
+        if self.color_enabled:
             return "\x1b[{};2;{};{};{}m".format(style, c.r, c.g, c.b) + str(txt) + '\x1b[0m'
         else:
             return txt

@@ -526,6 +526,12 @@ class Engine():
         T.print("Magic:{}{}".format(" "*(T.menu_width-(len("Magic:")+len(emg))), emg), "\n", self.c_text1)
         T.print("Attack:{}{}".format(" "*(T.menu_width-(len("Attack:")+len(eat))), eat), "\n", self.c_text1)
         T.print("Defense:{}{}".format(" "*(T.menu_width-(len("Defense:")+len(edf))), edf), "\n", self.c_text1)
+        T.print("\nStrength:{}{}".format(" "*(T.menu_width-(len("Strength:")+len(str(entity.strength)))), entity.strength), "\n", self.c_text1)
+        T.print("Constitution:{}{}".format(" "*(T.menu_width-(len("Constitution:")+len(str(entity.constitution)))), entity.constitution), "\n", self.c_text1)
+        T.print("Dexterity:{}{}".format(" "*(T.menu_width-(len("dexterity:")+len(str(entity.dexterity)))), entity.dexterity), "\n", self.c_text1)
+        T.print("Awareness:{}{}".format(" "*(T.menu_width-(len("Awareness:")+len(str(entity.awareness)))), entity.awareness), "\n", self.c_text1)
+        T.print("Intelligence:{}{}".format(" "*(T.menu_width-(len("Intelligence:")+len(str(entity.intelligence)))), entity.intelligence), "\n", self.c_text1)
+        T.print("Charisma:{}{}".format(" "*(T.menu_width-(len("Charisma:")+len(str(entity.charisma)))), entity.charisma), "\n", self.c_text1)
 
     def entity_stats(self, entity, menu):
         self.display_stats(entity)
@@ -571,6 +577,11 @@ class Engine():
         T.expanded_text("Magic:", str(mobs[R]['mp']))
         T.expanded_text("Attack:", str(mobs[R]['atk']))
         T.expanded_text("Defense:", str(mobs[R]['def']))
+        T.expanded_text("Strength:", str(mobs[R]['str']))
+        T.expanded_text("Constitution:", str(mobs[R]['con']))
+        T.expanded_text("Dexterity:", str(mobs[R]['dex']))
+        T.expanded_text("Awareness:", str(mobs[R]['awa']))
+        T.expanded_text("Intelligence:", str(mobs[R]['int']))
         T.expanded_text("Charisma:", str(mobs[R]['cha']))
         print()
         for p in playable_mobs:
