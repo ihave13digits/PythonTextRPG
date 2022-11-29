@@ -31,6 +31,11 @@ class Entity():
         self.magic = mobs[RACE]['mag']
         self.attack = mobs[RACE]['atk']
         self.defense = mobs[RACE]['def']
+        self.strength = mobs[RACE]['str']
+        self.constitution = mobs[RACE]['con']
+        self.dexterity = mobs[RACE]['dex']
+        self.awareness = mobs[RACE]['awa']
+        self.intelligence = mobs[RACE]['int']
         self.charisma = mobs[RACE]['cha']
 
         self.gold = 100
@@ -53,27 +58,32 @@ class Entity():
 
     def get_data(self):
         return {
-                "name"       : self.name,
-                "race"       : self.race,
-                "sex"        : self.sex,
-                "job"        : self.job,
-                "points"     : self.points,
-                "level"      : self.level,
-                "exp"        : self.exp,
-                "level_up"   : self.level_up,
-                "experience" : self.experience,
-                "hp"         : self.hp,
-                "HP"         : self.HP,
-                "mp"         : self.mp,
-                "MP"         : self.MP,
-                "magic"      : self.magic,
-                "attack"     : self.attack,
-                "defense"    : self.defense,
-                "charisma"   : self.charisma,
-                "gold"       : self.gold,
-                "equip"      : self.equip,
-                "spells"     : self.spells,
-                "inventory"  : self.inventory,
+                "name"         : self.name,
+                "race"         : self.race,
+                "sex"          : self.sex,
+                "job"          : self.job,
+                "points"       : self.points,
+                "level"        : self.level,
+                "exp"          : self.exp,
+                "level_up"     : self.level_up,
+                "experience"   : self.experience,
+                "hp"           : self.hp,
+                "HP"           : self.HP,
+                "mp"           : self.mp,
+                "MP"           : self.MP,
+                "magic"        : self.magic,
+                "attack"       : self.attack,
+                "defense"      : self.defense,
+                "strength"     : self.strength,
+                "constitution" : self.constitution,
+                "dexterity"    : self.dexterity,
+                "awareness"    : self.awareness,
+                "intelligence" : self.intelligence,
+                "charisma"     : self.charisma,
+                "gold"         : self.gold,
+                "equip"        : self.equip,
+                "spells"       : self.spells,
+                "inventory"    : self.inventory,
             }
 
     def set_data(self, data):
@@ -93,6 +103,11 @@ class Entity():
         self.magic = data["magic"]
         self.attack = data["attack"]
         self.defense = data["defense"]
+        self.strength = data['strength']
+        self.consitution = data['constitution']
+        self.dexterity = data['dexterity']
+        self.awareness = data['awareness']
+        self.intelligence = data['intelligence']
         self.charisma = data['charisma']
         self.gold = data["gold"]
         self.equip = data["equip"]
@@ -100,16 +115,17 @@ class Entity():
         self.inventory = data["inventory"]
 
     def get_magic_bonus(self):
-        bonus = 0
+        bonus = int(((self.awareness*0.25)+(self.intelligence*0.5)+(self.dexterity*0.25))*0.1)
         for i in self.equip:
             bonus += items[self.equip[i]].get('magic', 0)
         return bonus
 
     def get_attack_bonus(self):
-        return items[self.equip['left hand']]['attack']+items[self.equip['right hand']]['attack']
+        bonus = int(((self.constitution*0.25)+(self.strength*0.5)+(self.dexterity*0.25))*0.1)
+        return items[self.equip['left hand']]['attack']+items[self.equip['right hand']]['attack']+bonus
 
     def get_defense_bonus(self):
-        bonus = 0
+        bonus = int(((self.constitution*0.5)+(self.strength*0.25)+(self.dexterity*0.25))*0.1)
         for i in self.equip:
             bonus += items[self.equip[i]].get('defense', 0)
         return bonus
