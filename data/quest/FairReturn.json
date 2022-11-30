@@ -1,1 +1,4 @@
-{"location": "Fairlanding", "discovered": false, "completed": false, "part": "0", "0": {"part": "1", "prompt": ""}, "1": {"part": "2", "prompt": ""}, "2": {"part": "3", "prompt": ""}, "3": {"completed": true, "state": "main_menu", "add_quest": {"quest": ""}}}
+{"location": "Fairlanding", "discovered": false, "completed": false, "part": "0",
+"0": {"part": "1", "prompt": "Hodan's Note: To whomever found this cache, ye passed the test, and are an honorable person.", "reward": {"stat": "gold", "value": 250}},
+"1": {"completed": true, "state": "main_menu"}
+}
