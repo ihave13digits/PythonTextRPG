@@ -7,8 +7,8 @@ from color import *
 class Text():
 
     def __init__(self):
-        self.text_speed = 0.06
-        self.text_pause = 1.2
+        self.text_speed = 0.03
+        self.text_pause = 0.3
         self.menu_width = 48
         self.text_margin = 3
         self.clear_cmd = ""

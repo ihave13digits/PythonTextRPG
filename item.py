@@ -120,6 +120,12 @@ items = {
         'greatsword'                : {"type" : "arms", "attack" : 4, "defense" : 2, "value" : 1000, "rarity" : 50, "count" : 2, "slot" : " hand"},
         'claymore'                  : {"type" : "arms", "attack" : 4, "defense" : 2, "value" : 1000, "rarity" : 50, "count" : 2, "slot" : " hand"},
         'flamberge'                 : {"type" : "arms", "attack" : 5, "defense" : 2, "value" : 1000, "rarity" : 50, "count" : 2, "slot" : " hand"},
+        # Polearm
+        'hunting spear'             : {"type" : "arms", "attack" : 1, "defense" : 0, "value" : 50, "rarity" : 250, "count" : 2, "slot" : " hand"},
+        'spear'                     : {"type" : "arms", "attack" : 2, "defense" : 0, "value" : 50, "rarity" : 250, "count" : 2, "slot" : " hand"},
+        'pike'                      : {"type" : "arms", "attack" : 3, "defense" : 0, "value" : 50, "rarity" : 250, "count" : 2, "slot" : " hand"},
+        'lance'                     : {"type" : "arms", "attack" : 3, "defense" : 0, "value" : 50, "rarity" : 250, "count" : 2, "slot" : " hand"},
+        'voulge'                    : {"type" : "arms", "attack" : 4, "defense" : 0, "value" : 50, "rarity" : 250, "count" : 2, "slot" : " hand"},
         # Shield
         'buckler'                   : {"type" : "arms", "attack" : 1, "defense" : 1, "value" : 50, "rarity" : 100, "count" : 2, "slot" : " hand"},
         'shield'                    : {"type" : "arms", "attack" : 1, "defense" : 2, "value" : 100, "rarity" : 50, "count" : 2, "slot" : " hand"},
