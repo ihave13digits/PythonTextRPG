@@ -1,4 +1,5 @@
 import time, random
+from os import path
 
 from names import *
 from mob import *
@@ -18,7 +19,10 @@ class Engine():
     def __init__(self):
         self.running = True
         self.ai_turn = True
+        self.data_slot = 0
         self.data_file = "main-PythonTextRPG-ihave13digits.json"
+        self.data_path = "data/data"
+        self.quest_path = "data/quest"
         self.state = "intro"
         self.selected_quest = ""
         self.location = "Fairlanding"
@@ -33,10 +37,49 @@ class Engine():
         self.c_defense = Color(0, 255, 0)
         self.c_magic = Color(0, 0, 255)
         self.c_gold = Color(255, 255, 0)
+        self.quest_hash = {
+            'player_name' : self.player.name,
+        }
 
     ##
     ### Data
     ##
+
+    def get_data_path(self):
+        data_file = "slot-{}-{}".format(self.data_slot, self.data_file)
+        return path.join(path.join(path.dirname(__file__), self.data_path), data_file)
+
+    def save_quest_data(self):
+        import json
+        for q in quest:
+            data_file = "{}.json".format(q)
+            data_path = path.join(path.join(path.dirname(__file__), self.quest_path), data_file)
+            try:
+                with open(data_path,"w") as f:
+                    json.dump(quest[q], f)
+            except FileNotFoundError:
+                T.text("Quest File at path '{}' Not Found".format(data_path))
+
+    def load_quest_data(self):
+        global quest
+        import json
+        quest_list = []
+        with open(path.join(path.join(path.dirname(__file__), self.quest_path), "QuestList.json"),"r") as f:
+            qd = json.loads(f.read())
+            for q in qd:
+                if qd[q]:
+                    quest_list.append(q)
+        for q in quest_list:
+            data_file = "{}.json".format(q)
+            data_path = path.join(path.join(path.dirname(__file__), self.quest_path), data_file)
+            try:
+                with open(data_path,"r") as f:
+                    q_data = json.loads(f.read())
+                    quest[q] = q_data
+            except FileNotFoundError:
+                T.text("Quest File at path '{}' Not Found".format(data_path))
+        print(quest)
+            
 
     def save_data(self):
         import json
@@ -51,22 +94,14 @@ class Engine():
                 "player" : self.player.get_data(),
                 "world" : world,
             }
-        with open(self.data_file,"w") as f:
+        with open(self.get_data_path(),"w") as f:
             json.dump(data, f)
             f.close()
-        """
-        for key in data:
-            if type(data[key]) == dict:
-                for k in data[key]:
-                    print(data[key][k])
-            else:
-                print(data[key])
-        """
 
     def load_data(self):
         global world, quest
         import json
-        with open(self.data_file,"r") as f:
+        with open(self.get_data_path(),"r") as f:
             data = json.loads(f.read())
             T.text_pause = data['text_pause']
             T.text_speed = data['text_speed']
@@ -164,7 +199,7 @@ class Engine():
     def intro(self):
         can_continue = False
         try:
-            with open(self.data_file, "r") as f:
+            with open(self.get_data_path(), "r") as f:
                 f.close()
             can_continue = True
         except:
@@ -181,25 +216,22 @@ class Engine():
             self.running = False
             T.clear_text()
         elif sel == "1": self.state = "select_race"
-        elif sel == "2" and can_continue:
-            self.load_data()
+        elif sel == "2" and can_continue: self.load_data()
 
     def new_game(self):
         for l in world:
             S = Shop(world[l]['shop']['gold'], world[l]['shop']['markup'])
             world[l]['shop'] = S.get_data()
+        self.load_quest_data()
         self.state = 'quest'
-        self.selected_quest = "intro"
+        self.selected_quest = "Intro"
 
     def main_menu(self):
         T.clear_text()
         T.print("(1) Battle\n(2) Stats\n(3) Inventory\n(4) Location\n(5) Quests\n(6) Settings\n(0) Exit", "\n", self.c_text2)
         sel = T.input(": ")
         if sel == "0": self.state = "exit"
-        elif sel == "1":
-            self.ai_turn = random.choice([True, False])
-            self.randomize_mob()
-            self.state = "battle"
+        elif sel == "1": self.state = "prepare_battle"
         elif sel == "2": self.entity_stats(self.player, "main_menu")
         elif sel == "3": self.state = "inventory_menu"
         elif sel == "4": self.state = "location_menu"
@@ -243,14 +275,20 @@ class Engine():
         if data['object'] == 'player':
             if data['variable'] == "name":
                 self.player.name = T.input(": ")
+                self.quest_hash['player_name'] = self.player.name
 
     def quest_menu(self):
         global quest
         part = quest[self.selected_quest]['part']
         if 'reward' in quest[self.selected_quest][part]:
-            stat = quest[self.selected_quest][part]['reward']['stat']
-            value = quest[self.selected_quest][part]['reward']['value']
-            self.player.reward(stat, value)
+            if 'stat' in quest[self.selected_quest][part]['reward']:
+                key = quest[self.selected_quest][part]['reward']['stat']
+                value = quest[self.selected_quest][part]['reward']['value']
+                self.player.reward('stat', key, value)
+            elif 'item' in quest[self.selected_quest][part]['reward']:
+                key = quest[self.selected_quest][part]['reward']['item']
+                value = quest[self.selected_quest][part]['reward']['value']
+                self.player.reward('item', key, value)
         if 'add_quest' in quest[self.selected_quest][part]:
             q = quest[self.selected_quest][part]['add_quest']['quest']
             quest[q]['discovered'] = True
@@ -261,16 +299,26 @@ class Engine():
             return
         if 'freetype' in quest[self.selected_quest][part]:
             self.freetype(quest[self.selected_quest][part]['freetype'])
-        T.text(quest[self.selected_quest][part]['prompt'])
+        
+        if 'prompt' in quest[self.selected_quest][part]:
+            T.text(quest[self.selected_quest][part]['prompt'])
+        elif 'fprompt' in quest[self.selected_quest][part]:
+            T.text(quest[self.selected_quest][part]['fprompt'].format(**self.quest_hash))
+        
         if 'option' in quest[self.selected_quest][part]:
             for o in quest[self.selected_quest][part]['option']:
                 T.print("({}) {}".format(o, quest[self.selected_quest][part]['option'][o]['prompt']), "\n", self.c_text1)
             sel = T.input(": ")
             if sel in quest[self.selected_quest][part]['option']:
                 if 'reward' in quest[self.selected_quest][part]['option'][sel]:
-                    stat = quest[self.selected_quest][part]['option'][sel]['reward']['stat']
-                    value = quest[self.selected_quest][part]['option'][sel]['reward']['value']
-                    self.player.reward(stat, value)
+                    if 'stat' in quest[self.selected_quest][part]['option'][sel]['reward']:
+                        stat = quest[self.selected_quest][part]['option'][sel]['reward']['stat']
+                        value = quest[self.selected_quest][part]['option'][sel]['reward']['value']
+                        self.player.reward('stat', stat, value)
+                    if 'item' in quest[self.selected_quest][part]['option'][sel]['reward']:
+                        stat = quest[self.selected_quest][part]['option'][sel]['reward']['item']
+                        value = quest[self.selected_quest][part]['option'][sel]['reward']['value']
+                        self.player.reward('item', stat, value)
             if 'part' in quest[self.selected_quest][part]['option'][sel]:
                 quest[self.selected_quest]['part'] = quest[self.selected_quest][part]['option'][sel]['part']
                 #return
@@ -287,13 +335,17 @@ class Engine():
                 cplt = "Incomplete"
                 if quest[q]['completed']:
                     cplt = "Completed"
-                T.print("{}{}{}".format(qst, " "*(T.menu_width-(len(qst)+len(cplt))), cplt), "\n", self.c_text2)
-        T.print("\n(0) Back\n", "\n", self.c_text2)
+                T.print("{}{}{}| {}".format(qst, " "*(T.menu_width-(len(qst)+len(quest[q]['location'])+len(cplt)+2)), quest[q]['location'], cplt), "\n", self.c_text2)
+        T.print()
+        psbl = ""
+        if quest[self.selected_quest]['location'] == self.location and quest[self.selected_quest]['discovered'] == True and not quest[self.selected_quest]['completed']:
+            psbl = "(1) Accept Quest\n"
+        T.print("{}(0) Back\n".format(psbl), "\n", self.c_text2)
         sel = T.input(": ")
         if sel == "0":
             self.state = "main_menu"
-            if quest[self.selected_quest]['location'] == self.location:
-                self.state = "quest_menu"
+        if sel == "1" and psbl != "":
+            self.state = "quest"
         if sel in quest:
             self.selected_quest = sel
 
@@ -499,6 +551,20 @@ class Engine():
             return
         if self.ai_turn: self.battle_ai()
         else: self.battle_player()
+
+    def prepare_battle(self):
+        self.ai_turn = random.choice([True, False])
+        self.randomize_mob()
+        txt = ""
+        if ai_turn: txt = "{} is engaging {}".format(self.mob.race.capitalize(), self.player.name)
+        else: txt = "{} is engaging {}".format(self.player.name, self.mob.race)
+        T.text(txt)
+        T.print("(1) Engage")
+        sel = T.input(": ")
+        if sel == "1":
+            self.state = "battle"
+        if not ai_turn and sel == "0":
+            self.state = "main_menu"
 
     ##
     ### Stats

@@ -235,27 +235,32 @@ class Entity():
                 for n in range(crafting[item]['give'][i]):
                     self.add_item(i)
 
-    def reward(self, stat, value):
-        if stat == "gold":
-            self.gold += value
-        elif stat == "exp":
-            self.exp += value
-        elif stat == "hp":
-            self.hp += value
-        elif stat == "mp":
-            self.mp += value
-        elif stat == "HP":
-            self.HP += value
-        elif stat == "MP":
-            self.MP += value
-        elif stat == "mag":
-            self.magic += value
-        elif stat == "atk":
-            self.attack += value
-        elif stat == "def":
-            self.defense += value
-        elif stat == "spell":
-            self.add_spell(value)
+    def reward(self, mode, key, value):
+        if mode == 'stat':
+            if key == "gold":
+                self.gold += value
+            elif key == "exp":
+                self.exp += value
+            elif key == "hp":
+                self.hp += value
+            elif key == "mp":
+                self.mp += value
+            elif key == "HP":
+                self.HP += value
+            elif key == "MP":
+                self.MP += value
+            elif key == "mag":
+                self.magic += value
+            elif key == "atk":
+                self.attack += value
+            elif key == "def":
+                self.defense += value
+            elif key == "spell":
+                self.add_spell(value)
+        elif mode == 'item':
+            if key in items:
+                for i in range(value):
+                    self.add_item(key)
 
     def gain_experience(self, xp):
         self.exp = int(self.exp+xp)
