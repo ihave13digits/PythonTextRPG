@@ -789,12 +789,12 @@ class Engine():
         if 'south' in world[self.location]['travel']: s_txt = "(2) {}".format(world[self.location]['travel']['south'])
         n_off = int(32-int(len(n_txt)/2))
         s_off = int(32-int(len(s_txt)/2))
-        spcs = int(64-(len(w_txt)+len(e_txt)))
+        ew_off = int(64-int((len(e_txt))+(len(w_txt))))
+        b_off = int(32-int(len("(0) Back")/2))
         T.print("{}{}".format(" "*n_off, n_txt), "\n", self.c_text2)
-        T.expanded_text(w_txt, e_txt)
-        #T.print("{}{}{}".format(w_txt, ""*spcs, e_txt), "\n", self.c_text2)
+        T.print("{}{}{}".format(w_txt, " "*ew_off, e_txt), "\n", self.c_text2)
         T.print("{}{}".format(" "*s_off, s_txt), "\n", self.c_text2)
-        T.print("(0) Back", "\n", self.c_text2)
+        T.print("{}(0) Back".format(" "*b_off), "\n", self.c_text2)
 
         sel = T.input(": ")
         if sel == "0": self.state = "location_menu"

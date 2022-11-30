@@ -52,6 +52,14 @@ class Entity():
                 "legs"       : 'pants',
                 "hands"      : 'nothing',
                 "feet"       : 'nothing',
+                "ring0"      : 'nothing',
+                "ring1"      : 'nothing',
+                "ring2"      : 'nothing',
+                "ring3"      : 'nothing',
+                "ring4"      : 'nothing',
+                "ring5"      : 'nothing',
+                "ring6"      : 'nothing',
+                "ring7"      : 'nothing',
             }
         self.spells = {}
         self.inventory = {}

@@ -16,8 +16,8 @@
 "8": {"part": "9", "prompt": "... ..."},
 "9": {"part": "10", "prompt": "..."},
 "10": {"part": "11", "prompt": "Hodan: Ha, we got it", "reward": {"stat": "exp", "value": 100}},
-"11": {"part": "12", "prompt": "Hodan: Here, let's divvy up the meat and have a meal.", "reward": {"item": "steak", "value": 1}},
-"12": {"part": "13", "prompt": "... ...", "reward": {"item": "kebab", "value": 1}},
-"13": {"part": "14", "prompt": "...", "reward": {"item": "stew", "value": 1}},
+"11": {"part": "12", "prompt": "Hodan: Here, let's divvy up the meat and have a meal.", "reward": {"item": "steak", "value": 5}},
+"12": {"part": "13", "prompt": "... ...", "reward": {"item": "kebab", "value": 5}},
+"13": {"part": "14", "prompt": "...", "reward": {"item": "stew", "value": 3}},
 "14": {"completed": true, "state": "main_menu", "add_quest": {"quest": "FairReturn"}}
 }
