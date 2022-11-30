@@ -65,20 +65,18 @@ class Engine():
         import json
         quest_list = []
         with open(path.join(path.join(path.dirname(__file__), self.quest_path), "QuestList.json"),"r") as f:
-            qd = json.loads(f.read())
+            qd = json.loads(f.read().strip())
             for q in qd:
-                if qd[q]:
-                    quest_list.append(q)
+                if qd[q]: quest_list.append(q)
         for q in quest_list:
             data_file = "{}.json".format(q)
             data_path = path.join(path.join(path.dirname(__file__), self.quest_path), data_file)
             try:
                 with open(data_path,"r") as f:
-                    q_data = json.loads(f.read())
+                    q_data = json.loads(f.read().strip())
                     quest[q] = q_data
             except FileNotFoundError:
                 T.text("Quest File at path '{}' Not Found".format(data_path))
-        print(quest)
             
 
     def save_data(self):
@@ -556,15 +554,18 @@ class Engine():
         self.ai_turn = random.choice([True, False])
         self.randomize_mob()
         txt = ""
-        if ai_turn: txt = "{} is engaging {}".format(self.mob.race.capitalize(), self.player.name)
+        if self.ai_turn: txt = "{} is engaging {}".format(self.mob.race.capitalize(), self.player.name)
         else: txt = "{} is engaging {}".format(self.player.name, self.mob.race)
+        T.clear_text()
         T.text(txt)
-        T.print("(1) Engage")
-        sel = T.input(": ")
-        if sel == "1":
-            self.state = "battle"
-        if not ai_turn and sel == "0":
-            self.state = "main_menu"
+        chcs = ""
+        if not self.ai_turn:
+            T.print("(1) Engage\n(0) Retreat", "\n", self.c_text2)
+            sel = T.input(": ")
+            if not self.ai_turn and sel == "0":
+                self.state = "main_menu"
+                return
+        self.state = "battle"
 
     ##
     ### Stats
@@ -778,14 +779,21 @@ class Engine():
         T.clear_text()
         print(world_map)
         T.expanded_text("Location:", self.location)
-        if 'north' in world[self.location]['travel']:
-            T.print("(8) {}".format(world[self.location]['travel']['north']), "\n", self.c_text2)
-        if 'south' in world[self.location]['travel']:
-            T.print("(2) {}".format(world[self.location]['travel']['south']), "\n", self.c_text2)
-        if 'east' in world[self.location]['travel']:
-            T.print("(6) {}".format(world[self.location]['travel']['east']), "\n", self.c_text2)
-        if 'west' in world[self.location]['travel']:
-            T.print("(4) {}".format(world[self.location]['travel']['west']), "\n", self.c_text2)
+        n_txt = ""
+        s_txt = ""
+        e_txt = ""
+        w_txt = ""
+        if 'north' in world[self.location]['travel']: n_txt = "(8) {}".format(world[self.location]['travel']['north'])
+        if 'west' in world[self.location]['travel']: w_txt = "(4) {}".format(world[self.location]['travel']['west'])
+        if 'east' in world[self.location]['travel']: e_txt = "(6) {}".format(world[self.location]['travel']['east'])
+        if 'south' in world[self.location]['travel']: s_txt = "(2) {}".format(world[self.location]['travel']['south'])
+        n_off = int(32-int(len(n_txt)/2))
+        s_off = int(32-int(len(s_txt)/2))
+        spcs = int(64-(len(w_txt)+len(e_txt)))
+        T.print("{}{}".format(" "*n_off, n_txt), "\n", self.c_text2)
+        T.expanded_text(w_txt, e_txt)
+        #T.print("{}{}{}".format(w_txt, ""*spcs, e_txt), "\n", self.c_text2)
+        T.print("{}{}".format(" "*s_off, s_txt), "\n", self.c_text2)
         T.print("(0) Back", "\n", self.c_text2)
 
         sel = T.input(": ")
@@ -796,12 +804,13 @@ class Engine():
         elif sel == "2" and "south" in world[self.location]['travel']:
             self.state = "main_menu"
             self.location = world[self.location]['travel']['south']
-        elif sel == "6" and "east" in world[self.location]['travel']:
-            self.state = "main_menu"
-            self.location = world[self.location]['travel']['east']
         elif sel == "4" and "west" in world[self.location]['travel']:
             self.state = "main_menu"
             self.location = world[self.location]['travel']['west']
+        elif sel == "6" and "east" in world[self.location]['travel']:
+            self.state = "main_menu"
+            self.location = world[self.location]['travel']['east']
+        
 
     ##
     ### Settings
@@ -909,6 +918,7 @@ class Engine():
         elif self.state == "set_margin": self.set_margin()
         elif self.state == "set_width": self.set_width()
         elif self.state == "settings": self.settings()
+        elif self.state == "prepare_battle": self.prepare_battle()
         elif self.state == "select_race": self.select_race()
         elif self.state == "select_sex": self.select_sex()
         elif self.state == "new_game": self.new_game()
