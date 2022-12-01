@@ -33,10 +33,11 @@ class Engine():
         self.c_text1 = Color(255, 255, 255)
         self.c_text2 = Color(100, 100, 100)
         self.c_count = Color(80, 80, 80)
-        self.c_attack = Color(255, 0, 0)
-        self.c_defense = Color(0, 255, 0)
-        self.c_magic = Color(0, 0, 255)
-        self.c_gold = Color(255, 255, 0)
+        self.c_attack = Color(225, 80, 0)
+        self.c_defense = Color(80, 225, 0)
+        self.c_magic = Color(0, 80, 225)
+        self.c_gold = Color(225, 225, 0)
+        self.c_edit = Color(0, 0, 0)
         self.quest_hash = {
             'player_name' : self.player.name,
         }
@@ -81,7 +82,17 @@ class Engine():
 
     def save_data(self):
         import json
+        colors = {
+            'text1' : [self.c_text1.r, self.c_text1.g, self.c_text1.b],
+            'text2' : [self.c_text2.r, self.c_text2.g, self.c_text2.b],
+            'count' : [self.c_count.r, self.c_count.g, self.c_count.b],
+            'attack' : [self.c_attack.r, self.c_attack.g, self.c_attack.b],
+            'defense' : [self.c_defense.r, self.c_defense.g, self.c_defense.b],
+            'magic' : [self.c_magic.r, self.c_magic.g, self.c_magic.b],
+            'gold' : [self.c_gold.r, self.c_gold.g, self.c_gold.b],
+            }
         data = {
+                'colors' : colors,
                 "text_pause" : T.text_pause,
                 "text_speed" : T.text_speed,
                 "text_margin" : T.text_margin,
@@ -110,6 +121,28 @@ class Engine():
             quest = data['quests']
             self.player.set_data(data['player'])
             world = data['world']
+            colors = data['colors']
+            self.c_text1.r = colors["text1"][0]
+            self.c_text1.g = colors["text1"][1]
+            self.c_text1.b = colors["text1"][2]
+            self.c_text2.r = colors["text2"][0]
+            self.c_text2.g = colors["text2"][1]
+            self.c_text2.b = colors["text2"][2]
+            self.c_count.r = colors["count"][0]
+            self.c_count.g = colors["count"][1]
+            self.c_count.b = colors["count"][2]
+            self.c_attack.r = colors["attack"][0]
+            self.c_attack.g = colors["attack"][1]
+            self.c_attack.b = colors["attack"][2]
+            self.c_defense.r = colors["defense"][0]
+            self.c_defense.g = colors["defense"][1]
+            self.c_defense.b = colors["defense"][2]
+            self.c_magic.r = colors["magic"][0]
+            self.c_magic.g = colors["magic"][1]
+            self.c_magic.b = colors["magic"][2]
+            self.c_gold.r = colors["gold"][0]
+            self.c_gold.g = colors["gold"][1]
+            self.c_gold.b = colors["gold"][2]
             f.close()
         self.state = "main_menu"
 
@@ -148,7 +181,7 @@ class Engine():
         self.mob.randomize()
         self.mob.gain_experience(random.randint(int(self.player.experience/2), int(self.player.experience)))
 
-    def inventory_selection(self, inventory, state, gold_txt=''):
+    def inventory_selection(self, inventory, state, gold_txt='', mrk=1.0):
         selecting = True
         selection = "nothing"
         while selecting:
@@ -158,21 +191,50 @@ class Engine():
             for i in inventory:
                 if items[i]['type'] == self.item_type:
                     s_value = str(items[i]['value'])
+                    s_hp = ''
+                    s_mp = ''
+                    s_HP = ''
+                    s_MP = ''
+                    s_a = ''
+                    s_d = ''
+                    s_m = ''
                     s_atk = ''
                     s_def = ''
                     s_mgc = ''
+                    if "hp" in items[i]:
+                        s_hp = " [{}]".format(items[i]['hp'])
+                    if "mp" in items[i]:
+                        s_mp = " [{}]".format(items[i]['mp'])
+                    if "HP" in items[i]:
+                        s_hp = " [{}]".format(items[i]['HP'])
+                    if "MP" in items[i]:
+                        s_mp = " [{}]".format(items[i]['MP'])
+                    if "atk" in items[i]:
+                        s_a = " [{}]".format(items[i]['atk'])
+                    if "def" in items[i]:
+                        s_d = " [{}]".format(items[i]['def'])
+                    if "mag" in items[i]:
+                        s_m = " [{}]".format(items[i]['mag'])
                     if "attack" in items[i]:
                         s_atk = " [{}]".format(items[i]['attack'])
                     if "defense" in items[i]:
                         s_def = " [{}]".format(items[i]['defense'])
                     if "magic" in items[i]:
                         s_mgc = " [{}]".format(items[i]['magic'])
-                    margin = T.menu_width-(len(i)+len(str(inventory[i]))+len(s_value)+len(s_atk)+len(s_def)+len(s_mgc))
-                    print("[{}] {}{}{}{}{}{}".format(
+                    margin = T.menu_width-(len(i)+len(str(inventory[i]))+(
+                        len(s_value)+len(s_hp)+len(s_mp)+len(s_HP)+len(s_MP)+len(s_a)+len(s_d)+len(s_m)+len(s_atk)+len(s_def)+len(s_mgc)))
+                    print("[{}] {}{}{}{}{}{}{}{}{}{}{}{}{}".format(
                         T.get_colored_text(inventory[i], self.c_count),
                         T.get_colored_text(i, self.c_text1),
                         " "*margin,
-                        T.get_colored_text(s_value, self.c_gold),
+                        T.get_colored_text(int(int(s_value)*mrk), self.c_gold),
+                        T.get_colored_text(s_hp, self.c_attack),
+                        T.get_colored_text(s_mp, self.c_magic),
+                        T.get_colored_text(s_HP, self.c_attack),
+                        T.get_colored_text(s_MP, self.c_magic),
+                        T.get_colored_text(s_a, self.c_attack),
+                        T.get_colored_text(s_d, self.c_defense),
+                        T.get_colored_text(s_m, self.c_magic),
                         T.get_colored_text(s_atk, self.c_attack),
                         T.get_colored_text(s_def, self.c_defense),
                         T.get_colored_text(s_mgc, self.c_magic)
@@ -740,7 +802,7 @@ class Engine():
     ##
 
     def shop_buy(self):
-        sel = self.inventory_selection(self.shop.inventory, "shop_menu", "{}'s Gold: {}".format(self.player.name, self.player.gold))
+        sel = self.inventory_selection(self.shop.inventory, "shop_menu", "{}'s Gold: {}".format(self.player.name, self.player.gold), self.shop.markup)
         if sel != "nothing":
             if self.player.gold >= items[sel]['value']:
                 self.shop.del_item(sel)
@@ -751,7 +813,7 @@ class Engine():
                 world[self.location]['shop'] = self.shop.get_data()
 
     def shop_sell(self):
-        sel = self.inventory_selection(self.player.inventory, "shop_menu", "Shop's Gold: {}".format(self.shop.gold))
+        sel = self.inventory_selection(self.player.inventory, "shop_menu", "Shop's Gold: {}".format(self.shop.gold), self.shop.markup)
         if sel != "nothing":
             if self.shop.gold >= items[sel]['value']:
                 self.player.del_item(sel)
@@ -801,16 +863,16 @@ class Engine():
         sel = T.input(": ")
         if sel == "0": self.state = "location_menu"
         elif sel == "8" and "north" in world[self.location]['travel']:
-            self.state = "main_menu"
+            self.state = "travel_menu"
             self.location = world[self.location]['travel']['north']
         elif sel == "2" and "south" in world[self.location]['travel']:
-            self.state = "main_menu"
+            self.state = "travel_menu"
             self.location = world[self.location]['travel']['south']
         elif sel == "4" and "west" in world[self.location]['travel']:
-            self.state = "main_menu"
+            self.state = "travel_menu"
             self.location = world[self.location]['travel']['west']
         elif sel == "6" and "east" in world[self.location]['travel']:
-            self.state = "main_menu"
+            self.state = "travel_menu"
             self.location = world[self.location]['travel']['east']
         
 
@@ -880,9 +942,43 @@ class Engine():
             T.menu_width = 64
             T.text("Sample text to show margin.  Sample text to show margin.  Sample text to show margin.  Sample text to show margin.  Sample text to show margin.  ")
 
+    def set_color(self):
+        T.clear_text()
+        T.print("(r) Red\n(g) Green\n(b) Blue\n", "\n", self.c_edit)
+        T.print("(1) Text", "\n", self.c_text1)
+        T.print("(2) Option", "\n", self.c_text2)
+        T.print("(3) Count", "\n", self.c_count)
+        T.print("(4) Attack", "\n", self.c_attack)
+        T.print("(5) Defense", "\n", self.c_defense)
+        T.print("(6) Magic", "\n", self.c_magic)
+        T.print("(7) Gold", "\n", self.c_gold)
+        T.print("(0) Back", "\n", self.c_text2)
+        
+        sel = T.input(": ")
+        if sel == "0": self.state = "settings"
+        if sel == "r":
+            T.clear_text()
+            v = T.input(": ")
+            self.c_edit.r = int(v)
+        if sel == "g":
+            T.clear_text()
+            v = T.input(": ")
+            self.c_edit.g = int(v)
+        if sel == "b":
+            T.clear_text()
+            v = T.input(": ")
+            self.c_edit.b = int(v)
+        if sel == "1": self.c_text1.reset(self.c_edit)
+        if sel == "2": self.c_text2.reset(self.c_edit)
+        if sel == "3": self.c_count.reset(self.c_edit)
+        if sel == "4": self.c_attack.reset(self.c_edit)
+        if sel == "5": self.c_defense.reset(self.c_edit)
+        if sel == "6": self.c_magic.reset(self.c_edit)
+        if sel == "7": self.c_gold.reset(self.c_edit)
+
     def settings(self):
         T.clear_text()
-        T.print("(1) Text Speed\n(2) Text Pause\n(3) Clear Margin\n(4) Menu Width\n(0) Back", "\n", self.c_text2)
+        T.print("(1) Text Speed\n(2) Text Pause\n(3) Clear Margin\n(4) Menu Width\n(5) Color\n(0) Back", "\n", self.c_text2)
 
         sel = T.input(": ")
         if sel == "0": self.state = "main_menu"
@@ -890,6 +986,7 @@ class Engine():
         elif sel == "2": self.state = "set_pause"
         elif sel == "3": self.state = "set_margin"
         elif sel == "4": self.state = "set_width"
+        elif sel == "5": self.state = "set_color"
 
     def update_background(self):
         for l in world:
@@ -919,6 +1016,7 @@ class Engine():
         elif self.state == "set_pause": self.set_pause()
         elif self.state == "set_margin": self.set_margin()
         elif self.state == "set_width": self.set_width()
+        elif self.state == "set_color": self.set_color()
         elif self.state == "settings": self.settings()
         elif self.state == "prepare_battle": self.prepare_battle()
         elif self.state == "select_race": self.select_race()
