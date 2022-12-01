@@ -37,7 +37,7 @@ class Engine():
         self.c_defense = Color(80, 225, 0)
         self.c_magic = Color(0, 80, 225)
         self.c_gold = Color(225, 225, 0)
-        self.c_edit = Color(0, 0, 0)
+        self.c_edit = Color(255, 255, 255)
         self.quest_hash = {
             'player_name' : self.player.name,
         }
@@ -227,7 +227,7 @@ class Engine():
                         T.get_colored_text(inventory[i], self.c_count),
                         T.get_colored_text(i, self.c_text1),
                         " "*margin,
-                        T.get_colored_text(int(int(s_value)*mrk), self.c_gold),
+                        T.get_colored_text(int((int(s_value)*mrk)), self.c_gold),
                         T.get_colored_text(s_hp, self.c_attack),
                         T.get_colored_text(s_mp, self.c_magic),
                         T.get_colored_text(s_HP, self.c_attack),
@@ -239,20 +239,24 @@ class Engine():
                         T.get_colored_text(s_def, self.c_defense),
                         T.get_colored_text(s_mgc, self.c_magic)
                         ))
-            T.print("\n(1) Food\n(2) Potion\n(3) Scroll\n(4) Arms\n(5) Armor\n(0) Back\n", "\n", self.c_text2)
+            T.print("\n(1) Material\n(2) Food\n(3) Potion\n(4) Scroll\n(5) Arms\n(6) Armor\n(0) Back\n", "\n", self.c_text2)
             sel = T.input(": ")
             if sel == "0":
                 self.state = state
                 selecting = False
-            elif sel == "1": self.item_type = "food"
-            elif sel == "2": self.item_type = "potion"
-            elif sel == "3": self.item_type = "scroll"
-            elif sel == "4": self.item_type = "arms"
-            elif sel == "5": self.item_type = "armor"
+            elif sel == "1": self.item_type = "material"
+            elif sel == "2": self.item_type = "food"
+            elif sel == "3": self.item_type = "potion"
+            elif sel == "4": self.item_type = "scroll"
+            elif sel == "5": self.item_type = "arms"
+            elif sel == "6": self.item_type = "armor"
             elif sel in inventory:
                 selection = sel
                 selecting = False
         return selection
+
+    def roll_skill(self, entity, skill):
+        return bool(random.randint(0, 100) < entity.skills[skill])
 
     ##
     ### Game Menus
@@ -381,8 +385,8 @@ class Engine():
                         stat = quest[self.selected_quest][part]['option'][sel]['reward']['item']
                         value = quest[self.selected_quest][part]['option'][sel]['reward']['value']
                         self.player.reward('item', stat, value)
-            if 'part' in quest[self.selected_quest][part]['option'][sel]:
-                quest[self.selected_quest]['part'] = quest[self.selected_quest][part]['option'][sel]['part']
+                if 'part' in quest[self.selected_quest][part]['option'][sel]:
+                    quest[self.selected_quest]['part'] = quest[self.selected_quest][part]['option'][sel]['part']
                 #return
         if 'part' in quest[self.selected_quest][part]:
             quest[self.selected_quest]['part'] = quest[self.selected_quest][part]['part']
@@ -448,13 +452,14 @@ class Engine():
         if sel == "0":
             self.state = "battle"
             return
-        if sel == "1": entity = self.mob
-        if sel == "2": entity = self.player
+        if sel == "1": entity = self.player
+        if sel == "2": entity = self.mob
         T.clear_text()
         T.print("Select a spell to use", "\n", self.c_text1)
-        for i in self.player.spells:
-            margin = T.menu_width - ( len(i) + len(str(self.player.spells[i])) + len(str(magic[i]['cost'])) )
-            T.print("[{}] {}{}{}".format(self.player.spells[i], i, " "*margin, magic[i]['cost']), "\n", self.c_text2)
+        for i in magic:
+            if i in self.player.spells:
+                margin = T.menu_width - ( len(i) + len(str(self.player.spells[i])) + len(str(magic[i]['cost'])) )
+                T.print("[{}] {}{}{}".format(self.player.spells[i], i, " "*margin, magic[i]['cost']), "\n", self.c_text2)
         T.print("(0) Back", "\n", self.c_text2)
 
         sel = T.input(": ")
@@ -666,6 +671,7 @@ class Engine():
 
     def entity_stats(self, entity, menu):
         self.display_stats(entity)
+        self.display_skills(entity)
         sel = T.input("\n: ")
         spending_points = bool(entity.points > 0)
         while spending_points > 0:
@@ -674,47 +680,60 @@ class Engine():
                 self.state = menu
                 return
             self.display_stats(entity)
-            T.print("(1) Increase Magic\n(2) Increase Attack\n(3) Increase Defense\n(4) Charisma\n(5) Increase Health\n(6) Increase Mana\n(0) Back", "\n", self.c_text2)
+            self.display_skills(entity)
+            T.print("(1) Strength\n(2) Constitution\n(3) Dexterity\n(4) Awareness\n(5) Intelligence\n(6) Charisma\n(0) Back", "\n", self.c_text2)
             sel = T.input(": ")
             if sel == "0":
                 spending_points = False
             elif sel == "1":
-                entity.magic += 1
+                entity.strength += 1
                 entity.points -= 1
             elif sel == "2":
-                entity.attack += 1
+                entity.constitution += 1
                 entity.points -= 1
             elif sel == "3":
-                entity.defense += 1
+                entity.dexterity += 1
                 entity.points -= 1
             elif sel == "4":
-                entity.charisma += 1
+                entity.awareness += 1
                 entity.points -= 1
             elif sel == "5":
-                entity.HP += 1
-                entity.hp += 1
+                entity.wisdom += 1
                 entity.points -= 1
             elif sel == "6":
-                entity.MP += 1
-                entity.mp += 1
+                entity.charisma += 1
                 entity.points -= 1
         self.state = menu
+
+    def display_skills(self, entity):
+        T.print()
+        count = 1
+        for s in entity.skills:
+            skl = "{}{}".format(T.expand_text("| {}".format(s), 12, ' ', 'l'), T.expand_text(entity.skills[s], 4, ' ', 'r'))
+            T.print(skl, "", self.c_text1)
+            if count % int(T.menu_width/16) == 0:
+                T.print()
+            count += 1
+
+    def entity_skills(self, entity):
+        for s in entity.skills:
+            T.expanded_text("({})".format(s), entity.skills[s], " ", self.c_text2)
 
     def select_race(self):
         T.clear_text()
         R = self.player.race
         T.print(R, "\n\n", self.c_text1)
-        T.expanded_text("Health:", str(mobs[R]['hp']))
-        T.expanded_text("Magic:", str(mobs[R]['mp']))
-        T.expanded_text("Attack:", str(mobs[R]['atk']))
-        T.expanded_text("Defense:", str(mobs[R]['def']))
-        T.expanded_text("Strength:", str(mobs[R]['str']))
-        T.expanded_text("Constitution:", str(mobs[R]['con']))
-        T.expanded_text("Dexterity:", str(mobs[R]['dex']))
-        T.expanded_text("Awareness:", str(mobs[R]['awa']))
-        T.expanded_text("Intelligence:", str(mobs[R]['int']))
-        T.expanded_text("Charisma:", str(mobs[R]['cha']))
-        print()
+        T.expanded_text("Health:", str(mobs[R]['hp']), " ", self.c_text1)
+        T.expanded_text("Magic:", str(mobs[R]['mp']), " ", self.c_text1)
+        T.expanded_text("Attack:", str(mobs[R]['atk']), " ", self.c_text1)
+        T.expanded_text("Defense:", str(mobs[R]['def']), " ", self.c_text1)
+        T.expanded_text("Strength:", str(mobs[R]['str']), " ", self.c_text1)
+        T.expanded_text("Constitution:", str(mobs[R]['con']), " ", self.c_text1)
+        T.expanded_text("Dexterity:", str(mobs[R]['dex']), " ", self.c_text1)
+        T.expanded_text("Awareness:", str(mobs[R]['awa']), " ", self.c_text1)
+        T.expanded_text("Intelligence:", str(mobs[R]['int']), " ", self.c_text1)
+        T.expanded_text("Charisma:", str(mobs[R]['cha']), " ", self.c_text1)
+        T.print()
         for p in playable_mobs:
             T.print("({})".format(p), "\n", self.c_text2)
         T.print("(0){}Continue".format(" "*(T.menu_width-(len("(0)")+len("Continue")))), "\n", self.c_text2)
@@ -732,7 +751,6 @@ class Engine():
             self.player.sex = sel
             self.state = "new_game"
 
-    """
     def select_job(self):
         T.clear_text()
         print("(0) Back")
@@ -741,7 +759,6 @@ class Engine():
             self.player.job = sel
         if sel == "0":
             self.state = "main_menu"
-    """
 
     ##
     ### Item
@@ -802,24 +819,28 @@ class Engine():
     ##
 
     def shop_buy(self):
-        sel = self.inventory_selection(self.shop.inventory, "shop_menu", "{}'s Gold: {}".format(self.player.name, self.player.gold), self.shop.markup)
+        value_offset = (self.shop.markup*0.5)
+        sel = self.inventory_selection(self.shop.inventory, "shop_menu", "{}'s Gold: {}".format(self.player.name, self.player.gold), value_offset)
         if sel != "nothing":
-            if self.player.gold >= items[sel]['value']:
+            val = int(((1.0-(self.player.skills['barter']*0.01))*items[sel]['value'])*value_offset)
+            if self.player.gold >= val:
                 self.shop.del_item(sel)
-                self.shop.gold += items[sel]['value']
+                self.shop.gold += val
                 self.player.add_item(sel)
-                self.player.gold -= items[sel]['value']
+                self.player.gold -= val
                 T.text("{} bought {}".format(self.player.name, sel))
                 world[self.location]['shop'] = self.shop.get_data()
 
     def shop_sell(self):
+        value_offset = (self.shop.markup*0.5)+(self.player.skills['barter']*0.005)
         sel = self.inventory_selection(self.player.inventory, "shop_menu", "Shop's Gold: {}".format(self.shop.gold), self.shop.markup)
         if sel != "nothing":
-            if self.shop.gold >= items[sel]['value']:
+            val = int(((1.0-(self.player.skills['barter']*0.01))*items[sel]['value'])*value_offset)
+            if self.shop.gold >= val:
                 self.player.del_item(sel)
+                self.player.gold += val
                 self.shop.add_item(sel)
-                self.shop.gold -= items[sel]['value']
-                self.player.gold += items[sel]['value']
+                self.shop.gold -= val
                 T.text("{} sold {}".format(self.player.name, sel))
                 world[self.location]['shop'] = self.shop.get_data()
 
@@ -863,17 +884,25 @@ class Engine():
         sel = T.input(": ")
         if sel == "0": self.state = "location_menu"
         elif sel == "8" and "north" in world[self.location]['travel']:
-            self.state = "travel_menu"
-            self.location = world[self.location]['travel']['north']
+            if self.roll_skill(self.player, 'travel'):
+                self.state = "travel_menu"
+                self.location = world[self.location]['travel']['north']
+            else: self.state = "prepare_battle"
         elif sel == "2" and "south" in world[self.location]['travel']:
-            self.state = "travel_menu"
-            self.location = world[self.location]['travel']['south']
+            if self.roll_skill(self.player, 'travel'):
+                self.state = "travel_menu"
+                self.location = world[self.location]['travel']['south']
+            else: self.state = "prepare_battle"
         elif sel == "4" and "west" in world[self.location]['travel']:
-            self.state = "travel_menu"
-            self.location = world[self.location]['travel']['west']
+            if self.roll_skill(self.player, 'travel'):
+                self.state = "travel_menu"
+                self.location = world[self.location]['travel']['west']
+            else: self.state = "prepare_battle"
         elif sel == "6" and "east" in world[self.location]['travel']:
-            self.state = "travel_menu"
-            self.location = world[self.location]['travel']['east']
+            if self.roll_skill(self.player, 'travel'):
+                self.state = "travel_menu"
+                self.location = world[self.location]['travel']['east']
+            else: self.state = "prepare_battle"
         
 
     ##

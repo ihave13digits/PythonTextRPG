@@ -16,6 +16,7 @@ class Entity():
         self.job = ""
         self.level = 1
         self.points = 0
+        self.skill_points = 0
         self.exp = 0
         self.level_up = mobs[RACE]['lup']
         self.experience = 0
@@ -61,6 +62,25 @@ class Entity():
                 "ring6"      : 'nothing',
                 "ring7"      : 'nothing',
             }
+        self.skills = {
+                "barter"   : 0,
+                "bluff"    : 0,
+                "build"    : 0,
+                "cast"     : 0,
+                "climb"    : 0,
+                "combat"   : 0,
+                "craft"    : 0,
+                "dodge"    : 0,
+                "forage"   : 0,
+                "heal"     : 0,
+                "hide"     : 0,
+                "hunt"     : 0,
+                "persuade" : 0,
+                "search"   : 0,
+                "sneak"    : 0,
+                "travel"   : 0,
+            }
+        self.jobs = {}
         self.spells = {}
         self.inventory = {}
 
@@ -71,6 +91,7 @@ class Entity():
                 "sex"          : self.sex,
                 "job"          : self.job,
                 "points"       : self.points,
+                "skill_points" : self.skill_points,
                 "level"        : self.level,
                 "exp"          : self.exp,
                 "level_up"     : self.level_up,
@@ -90,6 +111,8 @@ class Entity():
                 "charisma"     : self.charisma,
                 "gold"         : self.gold,
                 "equip"        : self.equip,
+                "skills"       : self.skills,
+                "jobs"         : self.jobs,
                 "spells"       : self.spells,
                 "inventory"    : self.inventory,
             }
@@ -100,6 +123,7 @@ class Entity():
         self.sex = data['sex']
         self.job = data["job"]
         self.points = data["points"]
+        self.skill_points = data["skill_points"]
         self.level = data["level"]
         self.exp = data["exp"]
         self.level_up = data["level_up"]
@@ -119,6 +143,8 @@ class Entity():
         self.charisma = data['charisma']
         self.gold = data["gold"]
         self.equip = data["equip"]
+        self.skills = data["skills"]
+        self.jobs = data["jobs"]
         self.spells = data["spells"]
         self.inventory = data["inventory"]
 
@@ -158,11 +184,13 @@ class Entity():
     def take_damage(self, dmg):
         self.hp -= max(dmg-self.get_armor(), 1)
 
+    def add_job(self, j):
+        if j in self.jobs: self.jobs[j] += 1
+        else: self.jobs[j] = 1
+
     def add_spell(self, spell):
-        if spell in self.spells:
-            self.spells[spell] += 1
-        else:
-            self.spells[spell] = 1
+        if spell in self.spells: self.spells[spell] += 1
+        else: self.spells[spell] = 1
 
     def use_spell(self, spell, entity):
         if self.mp >= magic[spell]['cost']:
@@ -175,10 +203,8 @@ class Entity():
             self.mp -= magic[spell]['cost']
 
     def add_item(self, item):
-        if item in self.inventory:
-            self.inventory[item] += 1
-        else:
-            self.inventory[item] = 1
+        if item in self.inventory: self.inventory[item] += 1
+        else: self.inventory[item] = 1
 
     def del_item(self, item):
         if item in self.inventory:
