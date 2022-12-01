@@ -23,6 +23,9 @@ class Shop():
         self.markup = data['markup']
         self.inventory = data['inventory']
 
+    def get_item_value(self, item):
+        return items[item]['value']*self.markup
+
     def add_item(self, item):
         if item in self.inventory:
             self.inventory[item] += 1
