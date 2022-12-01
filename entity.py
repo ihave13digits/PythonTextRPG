@@ -166,8 +166,8 @@ class Entity():
 
     def use_spell(self, spell, entity):
         if self.mp >= magic[spell]['cost']:
-            if "hp" in magic[spell]: entity.hp = min(entity.hp+(magic[spell]["hp"]+self.get_magic_bonus()), entity.HP)
-            if "damage" in magic[spell]: entity.take_damage(self.get_magic_damage(spell))
+            if "hp" in magic[spell]: entity.hp = min(entity.hp+(int(magic[spell]["hp"]*(self.spells[spell]*0.2))+self.get_magic_bonus()), entity.HP)
+            if "damage" in magic[spell]: entity.take_damage(int(self.get_magic_damage(spell)*(self.spells[spell]*0.2)))
             if "poisoned" in magic[spell]: entity.poisoned = magic[spell]['poisoned']
             if "confused" in magic[spell]: entity.confused = magic[spell]['confused']
             if "stunned" in magic[spell]: entity.stunned = magic[spell]['stunned']

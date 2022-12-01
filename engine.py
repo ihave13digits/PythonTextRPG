@@ -136,9 +136,11 @@ class Engine():
     def randomize_mob(self):
         race = world[self.location]['mobs'][random.randint(0, len(world[self.location]['mobs'])-1)]
         sex = random.choice(("m", "f"))
-        first_name = random.choice(names[race][sex])
-        last_name = random.choice(names[race]['l'])
-        name = "{} {}".format(first_name, last_name)
+        name = race
+        if race in playable_mobs:
+            first_name = random.choice(names[race][sex])
+            last_name = random.choice(names[race]['l'])
+            name = "{} {}".format(first_name, last_name)
         self.mob = Entity(name, race, sex)
         first_name = random.choice(names[race]['m'])
         last_name = random.choice(names[race]['l'])
