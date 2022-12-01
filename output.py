@@ -35,8 +35,14 @@ class Text():
         else:
             return txt
 
+    def expand_text(self, a, width, g=" ", align='l'):
+        if align == 'l':
+            return "{}{}".format(a, g*(width-(len(str(a)))))
+        if align == 'r':
+            return "{}{}".format(g*(width-(len(str(a)))), a)
+
     def expanded_text(self, a, b, g=" ", c=Color(255, 255, 255)):
-        self.print("{}{}{}".format(a, g*(self.menu_width-(len(a)+len(b))), b), "\n", c)
+        self.print("{}{}{}".format(a, g*(self.menu_width-(len(str(a))+len(str(b)))), b), "\n", c)
 
     def print(self, txt="", end="\n", c=Color(255,255,255)):
         print(self.get_colored_text(txt, c), end=end)
