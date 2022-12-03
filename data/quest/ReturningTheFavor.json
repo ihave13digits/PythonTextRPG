@@ -1,0 +1,5 @@
+{"location": "Fairlanding", "discovered": false, "completed": false, "part": "0",
+"0": {"part": "1", "fprompt": "Hodan: Pleasure seeing ye again, {player_name}.", "require": {"stat": "gold", "value": 250}},
+"1": {"part": "2", "fprompt": "Hodan: I appreciate ye payin' back the gold, {player_name}.  Normally I wouldn't accept, but the huntin' hasn't been providing lately."},
+"2": {"completed": true, "state": "main_menu"}
+}
