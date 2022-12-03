@@ -63,22 +63,22 @@ class Entity():
                 "ring7"      : 'nothing',
             }
         self.skills = {
-                "barter"   : 0,
-                "bluff"    : 0,
-                "build"    : 0,
-                "cast"     : 0,
-                "climb"    : 0,
-                "combat"   : 0,
-                "craft"    : 0,
-                "dodge"    : 0,
-                "forage"   : 0,
-                "heal"     : 0,
-                "hide"     : 0,
-                "hunt"     : 0,
-                "persuade" : 0,
-                "search"   : 0,
-                "sneak"    : 0,
-                "travel"   : 0,
+                "barter"   : 10,
+                "bluff"    : 10,
+                "build"    : 10,
+                "cast"     : 10,
+                "climb"    : 10,
+                "combat"   : 10,
+                "craft"    : 10,
+                "dodge"    : 10,
+                "forage"   : 10,
+                "heal"     : 10,
+                "hide"     : 10,
+                "hunt"     : 10,
+                "persuade" : 10,
+                "search"   : 10,
+                "sneak"    : 10,
+                "travel"   : 10,
             }
         self.jobs = {}
         self.spells = {}
@@ -300,6 +300,43 @@ class Entity():
             if key in items:
                 for i in range(value):
                     self.add_item(key)
+
+    def require(self, mode, key, value):
+        passed = False
+        if mode == 'stat':
+            if key == "gold" and self.gold >= value:
+                self.gold -= value
+                passed = True
+            elif key == "exp" and self.exp >= value:
+                passed = True
+            elif key == "hp" and self.hp >= value:
+                passed = True
+            elif key == "mp" and self.mp >= value:
+                passed = True
+            elif key == "HP" and self.HP >= value:
+                passed = True
+            elif key == "MP" and self.MP >= value:
+                passed = True
+            elif key == "mag" and self.magic >= value:
+                passed = True
+            elif key == "atk" and self.attack >= value:
+                passed = True
+            elif key == "def" and self.defense >= value:
+                passed = True
+            elif key == "spell" and value in self.spells:
+                self.use_spell(value, Entity("Mob", "human", "m"))
+                passed = True
+        elif mode == 'skill':
+            if key in self.skills:
+                if self.skills[key] >= value:
+                    passed = True
+        elif mode == 'item':
+            if key in self.items:
+                if self.items[key] >= value:
+                    for i in range(value):
+                        self.del_item(key)
+                    passed = True
+        return passed
 
     def calculate_derived(self):
         self.HP = int(mobs[self.race]['hp']*(((self.strength*0.5)+(self.constitution*0.5))*0.25))

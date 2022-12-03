@@ -345,7 +345,19 @@ class Engine():
 
     def quest_menu(self):
         global quest
+        passed = True
         part = quest[self.selected_quest]['part']
+        if 'require' in quest[self.selected_quest][part]:
+            if 'stat' in quest[self.selected_quest][part]['require']:
+                stat = quest[self.selected_quest][part]['require']['stat']
+                value = quest[self.selected_quest][part]['require']['value']
+                if not self.player.require('stat', stat, value):
+                    passed = False
+            if 'item' in quest[self.selected_quest][part]['require']:
+                stat = quest[self.selected_quest][part]['require']['item']
+                value = quest[self.selected_quest][part]['require']['value']
+                if not self.player.require('item', stat, value):
+                    passed = False
         if 'reward' in quest[self.selected_quest][part]:
             if 'stat' in quest[self.selected_quest][part]['reward']:
                 key = quest[self.selected_quest][part]['reward']['stat']
@@ -376,6 +388,17 @@ class Engine():
                 T.print("({}) {}".format(o, quest[self.selected_quest][part]['option'][o]['prompt']), "\n", self.c_text1)
             sel = T.input(": ")
             if sel in quest[self.selected_quest][part]['option']:
+                if 'require' in quest[self.selected_quest][part]['option'][sel]:
+                    if 'stat' in quest[self.selected_quest][part]['option'][sel]['require']:
+                        stat = quest[self.selected_quest][part]['option'][sel]['require']['stat']
+                        value = quest[self.selected_quest][part]['option'][sel]['require']['value']
+                        if not self.player.require('stat', stat, value):
+                            passed = False
+                    if 'item' in quest[self.selected_quest][part]['option'][sel]['require']:
+                        stat = quest[self.selected_quest][part]['option'][sel]['require']['item']
+                        value = quest[self.selected_quest][part]['option'][sel]['require']['value']
+                        if not self.player.require('item', stat, value):
+                            passed = False
                 if 'reward' in quest[self.selected_quest][part]['option'][sel]:
                     if 'stat' in quest[self.selected_quest][part]['option'][sel]['reward']:
                         stat = quest[self.selected_quest][part]['option'][sel]['reward']['stat']
@@ -385,11 +408,14 @@ class Engine():
                         stat = quest[self.selected_quest][part]['option'][sel]['reward']['item']
                         value = quest[self.selected_quest][part]['option'][sel]['reward']['value']
                         self.player.reward('item', stat, value)
-                if 'part' in quest[self.selected_quest][part]['option'][sel]:
+                if 'part' in quest[self.selected_quest][part]['option'][sel] and passed:
                     quest[self.selected_quest]['part'] = quest[self.selected_quest][part]['option'][sel]['part']
-                #return
-        if 'part' in quest[self.selected_quest][part]:
+                elif 'part' in quest[self.selected_quest][part]['option'][sel] and not passed:
+                    self.state = "main_menu"
+        if 'part' in quest[self.selected_quest][part] and passed:
             quest[self.selected_quest]['part'] = quest[self.selected_quest][part]['part']
+        elif 'part' in quest[self.selected_quest][part] and not passed:
+            self.state = "main_menu"
 
     def quest_history(self):
         T.clear_text()
