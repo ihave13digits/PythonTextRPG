@@ -437,9 +437,12 @@ class Engine():
         if select == "0": return
         if select == "1": hand = "left hand"
         if select == "2": hand = "right hand"
-        dmg = self.player.get_damage(hand)
-        self.mob.take_damage(dmg)
-        T.text("{} attacked {} for {} damage".format(self.player.name, self.mob.name, max(1, dmg-self.mob.get_armor())))
+        if self.roll_skill(self.player, "combat"):
+            dmg = self.player.get_damage(hand)
+            self.mob.take_damage(dmg)
+            T.text("{} attacked {} for {} damage".format(self.player.name, self.mob.name, max(1, dmg-self.mob.get_armor())))
+        else:
+            T.text("{} missed".format(self.player.name))
         self.player.take_stat_damage()
         self.ai_turn = True
         self.state = "battle"
@@ -467,8 +470,11 @@ class Engine():
             self.state = "battle"
             return
         elif sel in self.player.spells:
-            self.player.use_spell(sel, entity)
-            T.text("{} used {} on {}".format(self.player.name, sel, entity.name))
+            if self.roll_skill(self.player, 'cast'):
+                self.player.use_spell(sel, entity)
+                T.text("{} used {} on {}".format(self.player.name, sel, entity.name))
+            else:
+                T.text("{} miscasted {} on {}".format(self.player.name, sel, entity.name))
             self.player.take_stat_damage()
             self.ai_turn = True
             self.state = "battle"
@@ -528,7 +534,6 @@ class Engine():
             if random.randint(0, 100) < 10:
                 affiction = "confusion"
                 can_perform_action = False
-        
         
         if can_perform_action:
             if self.mob.hp < self.mob.HP/2:
@@ -715,9 +720,21 @@ class Engine():
                 T.print()
             count += 1
 
-    def entity_skills(self, entity):
+    def entity_skills(self, entity, menu):
+        T.clear_text()
         for s in entity.skills:
             T.expanded_text("({})".format(s), entity.skills[s], " ", self.c_text2)
+        while entity.skill_points > 0:
+            T.clear_text()
+            for s in entity.skills:
+                T.expanded_text("({})".format(s), entity.skills[s], " ", self.c_text2)
+            T.print("(0) Done")
+            sel = T.input(": ")
+            if sel == "0": self.state = menu
+            else:
+                if sel in entity.skills and entity.skill_points > 0:
+                    entity.skills[sel] += 1
+                    entity.skill_points -= 1
 
     def select_race(self):
         T.clear_text()
@@ -753,12 +770,34 @@ class Engine():
 
     def select_job(self):
         T.clear_text()
-        print("(0) Back")
+        for j in jobs:
+            can_job = True
+            if 'require' in jobs[j]:
+                for r in jobs[j]['require']:
+                    if r in self.player.jobs:
+                        if self.player.jobs[r] < jobs[j]['require'][r]:
+                            can_job = False
+                    else:
+                        can_job = False
+            if can_job:
+                T.print("({})".format(j), "\n", self.c_text2)
+        T.print("(0) Back", "\n", self.c_text2)
         sel = T.input(": ")
         if sel in jobs:
             self.player.job = sel
-        if sel == "0":
-            self.state = "main_menu"
+        if sel == "0" and self.player.job != "":
+            self.state = "level_up"
+
+    def level_up(self):
+        T.clear_text()
+        T.text("", "\n", self.c_text1)
+        T.print("(1) Points\n(2) Skills\n(3) Job\n(0) Done", "\n", self.c_text2)
+        sel = T.input(": ")
+        if sel == "0": self.state = "main_menu"
+        if sel == "1": self.entity_stats(self.player, "level_up")
+        if sel == "2": self.entity_skills(self.player, "level_up")
+        if sel == "3": self.select_job()
+        
 
     ##
     ### Item
@@ -828,7 +867,7 @@ class Engine():
                 self.shop.gold += val
                 self.player.add_item(sel)
                 self.player.gold -= val
-                T.text("{} bought {}".format(self.player.name, sel))
+                T.text("{} bought {} for {} gold.".format(self.player.name, sel, val))
                 world[self.location]['shop'] = self.shop.get_data()
 
     def shop_sell(self):
@@ -841,7 +880,7 @@ class Engine():
                 self.player.gold += val
                 self.shop.add_item(sel)
                 self.shop.gold -= val
-                T.text("{} sold {}".format(self.player.name, sel))
+                T.text("{} sold {} for {} gold.".format(self.player.name, sel, val))
                 world[self.location]['shop'] = self.shop.get_data()
 
     def shop_menu(self):
@@ -1048,7 +1087,9 @@ class Engine():
         elif self.state == "set_color": self.set_color()
         elif self.state == "settings": self.settings()
         elif self.state == "prepare_battle": self.prepare_battle()
+        elif self.state == "level_up": self.level_up()
         elif self.state == "select_race": self.select_race()
+        elif self.state == "select_job": self.select_job()
         elif self.state == "select_sex": self.select_sex()
         elif self.state == "new_game": self.new_game()
         elif self.state == "intro": self.intro()

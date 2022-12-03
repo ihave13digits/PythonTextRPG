@@ -83,6 +83,10 @@ class Entity():
         self.jobs = {}
         self.spells = {}
         self.inventory = {}
+        
+        self.calculate_derived()
+        self.hp = self.HP
+        self.mp = self.MP
 
     def get_data(self):
         return {
@@ -255,7 +259,8 @@ class Entity():
         for i in crafting[item]['take']:
             if i in self.inventory:
                 if self.inventory[i] < crafting[item]['take'][i]:
-                    can_craft = False
+                    if self.skills['craft'] < crafting[item]['craft']:
+                        can_craft = False
             else:
                 can_craft = False
         return can_craft
@@ -296,6 +301,13 @@ class Entity():
                 for i in range(value):
                     self.add_item(key)
 
+    def calculate_derived(self):
+        self.HP = int(mobs[self.race]['hp']*(((self.strength*0.5)+(self.constitution*0.5))*0.25))
+        self.MP = int(mobs[self.race]['mp']*(((self.awareness*0.5)+(self.intelligence*0.5))*0.25))
+        self.magic = int(mobs[self.race]['mag']*(((self.awareness*0.11)+(self.intelligence*0.22)+(self.dexterity*0.11))*0.25))
+        self.attack = int(mobs[self.race]['atk']*(((self.strength*0.22)+(self.constitution*0.11)+(self.dexterity*0.11))*0.25))
+        self.defense = int(mobs[self.race]['def']*(((self.strength*0.11)+(self.constitution*0.11)+(self.dexterity*0.22))*0.25))
+
     def gain_experience(self, xp):
         self.exp = int(self.exp+xp)
         while self.exp >= self.level_up:
@@ -306,30 +318,29 @@ class Entity():
         self.exp = int(self.exp-self.level_up)
         self.level += 1
         self.level_up = int(self.level_up*mobs[self.race]['curve'])
+        self.skill_points += int((self.intelligence*0.75)+(self.awareness*0.25)*0.5)
         if self.level % mobs[self.race]['point'] == 0:
             self.points += 1
-            if self.is_ai:
-                self.auto_level()
+        if self.is_ai:
+            self.auto_level()
+        self.calculate_derived()
     
     def auto_level(self):
+        skills = []
+        for s in self.skills:
+            skills.append(s)
         while self.points > 0:
-            stat = random.randint(0, 4)
-            if stat == 0:
-                self.magic += 1
-            elif stat == 1:
-                self.attack += 1
-            elif stat == 2:
-                self.defense += 1
-            elif stat == 3:
-                self.HP += 1
-                self.hp += 1
-            elif stat == 4:
-                self.MP += 1
-                self.mp += 1
-            else:
-                self.HP += 1
-                self.hp += 1
+            stat = random.randint(0, 5)
+            if stat ==   0: self.strength += 1
+            elif stat == 1: self.constitution += 1
+            elif stat == 2: self.dexterity += 1
+            elif stat == 3: self.awareness += 1
+            elif stat == 4: self.intelligence += 1
+            elif stat == 5: self.charisma += 1
             self.points -= 1
+        while self.skill_points > 0:
+            self.skills[random.choice(skills)] += 1
+            self.skill_points -= 1
 
     def auto_equip(self):
         to_cull = []
