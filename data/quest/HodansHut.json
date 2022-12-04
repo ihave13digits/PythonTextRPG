@@ -7,6 +7,6 @@
 "1a": {"part": "2", "prompt": "Hodan: Glad To hear it, take this scroll anyway, fer stoppin' by.", "reward": {"item": "scroll of firestorm", "value": 1}},
 "1b": {"part": "2", "prompt": "Hodan: Perhaps this scroll will get you there faster.", "reward": {"item": "scroll of earthquake", "value": 1}},
 "1c": {"part": "2", "prompt": "Hodan: That's a shame.  Here, take this scroll and maybe it'll help.", "reward": {"item": "scroll of lightning barrage", "value": 1}},
-"2": {"part": "3", "prompt": "Hodan: "},
+"2": {"part": "3", "prompt": "Hodan: Remember to keep an ear out while yer travelin', or someone might try to ambush ye.  Good luck to ye.", "reward": {"skill": "travel", "value": 5}},
 "3": {"completed": true, "state": "main_menu", "add_quest": {"quest": "FairReturn"}}
 }
