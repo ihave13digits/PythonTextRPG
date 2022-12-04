@@ -1,5 +1,5 @@
 from os import system, environ
-from sys import stdout, platform
+from sys import stdin, stdout, platform
 import textwrap, time
 
 from color import *
@@ -49,6 +49,12 @@ class Text():
 
     def input(self, txt, c=Color(255,255,255)):
         return input(self.get_colored_text(txt, c, 5))
+
+    def get_char(self):
+        system("stty raw -echo")
+        c = stdin.read(1)
+        system("stty -raw echo")
+        return str(c)
 
     def text(self, text):
         self.clear_text()

@@ -1,9 +1,6 @@
 import random
 
-from mob import *
-from job import *
-from item import *
-from magic import *
+from game_data import *
 from output import *
 
 class Entity():

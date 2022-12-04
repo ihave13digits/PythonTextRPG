@@ -1,0 +1,49 @@
+{
+"firestorm"         : {"burned" : true, "damage" : 100, "cost" : 25},
+"lightning barrage" : {"stunned" : true, "damage" : 100, "cost" : 25},
+"tsunami"           : {"confused" : true, "damage" : 100, "cost" : 25},
+"earthquake"        : {"stunned" : true, "damage" : 100, "cost" : 25},
+"destroy"           : {"confused" : true, "damage" : 100, "cost" : 25},
+
+
+
+"fire blast"        : {"damage" : 50, "cost" : 10},
+"lightning"         : {"damage" : 50, "cost" : 10},
+"flash flood"       : {"damage" : 50, "cost" : 10},
+"fissure"           : {"damage" : 50, "cost" : 10},
+"kill"              : {"damage" : 50, "cost" : 10},
+
+
+
+"fireball"          : {"damage" : 10, "cost" : 5},
+"lightning bolt"    : {"damage" : 10, "cost" : 5},
+"water burst"       : {"damage" : 10, "cost" : 5},
+"ground collapse"   : {"damage" : 10, "cost" : 5},
+"harm"              : {"damage" : 10, "cost" : 5},
+
+
+
+"burn"              : {"burned" : true, "damage" : 10, "cost" : 10},
+"electric shock"    : {"stunned" : true, "damage" : 10, "cost" : 10},
+"poison rain"       : {"poisoned" : true, "damage" : 10, "cost" : 10},
+"tremor"            : {"stunned" : true, "damage" : 10, "cost" : 10},
+"decay"             : {"confused" : true, "damage" : 10, "cost" : 10},
+
+
+
+"heal"              : {"hp" : 10, "cost" : 5},
+"heal all"          : {"hp" : 100, "cost" : 25},
+"cure"              : {"burned" : false, "stunned" : false, "confused" : false, "poisoned" : false, "cost" : 10},
+"cure all"          : {"burned" : false, "stunned" : false, "confused" : false, "poisoned" : false, "hp" : 100, "cost" : 25},
+"cure poison"       : {"poisoned" : false, "cost" : 5},
+"cure confusion"    : {"confused" : false, "cost" : 5},
+"cure stun"         : {"stunned" : false, "cost" : 5},
+"cure burn"         : {"burned" : false, "cost" : 5},
+
+
+
+"inflict poison"    : {"poisoned" : true, "cost" : 5},
+"inflict confusion" : {"confused" : true, "cost" : 5},
+"inflict stun"      : {"stunned" : true, "cost" : 5},
+"inflict burn"      : {"burned" : true, "cost" : 5}
+}

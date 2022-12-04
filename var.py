@@ -1,17 +1,13 @@
 import random
+from os import path
 
-from names import *
-from mob import *
-from job import *
-from magic import *
-from item import *
-from world import *
-from quest import *
-from output import *
 from world_map import *
+from game_data import *
+from output import *
 
 from shop import Shop
 from entity import Entity
+from color import Color
 
 class Var():
 
@@ -22,6 +18,7 @@ class Var():
         self.data_file = "main-PythonTextRPG-ihave13digits.json"
         self.data_path = "data/data"
         self.quest_path = "data/quest"
+        self.game_path = "data/game_data"
         self.state = "intro"
         self.selected_quest = ""
         self.location = "Fairlanding"
