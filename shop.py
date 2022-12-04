@@ -1,6 +1,6 @@
 import random
 
-from item import *
+from game_data import *
 
 class Shop():
 

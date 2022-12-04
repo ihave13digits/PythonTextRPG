@@ -59,6 +59,6 @@ def level_up():
     T.print("(1) Points\n(2) Skills\n(3) Job\n(0) Done", "\n", V.c_text2)
     sel = T.input(": ")
     if sel == "0": V.state = "main_menu"
-    if sel == "1": entity_stats(V.player, "level_up")
-    if sel == "2": entity_skills(V.player, "level_up")
+    if sel == "1": V.entity_stats(V.player, "level_up")
+    if sel == "2": V.entity_skills(V.player, "level_up")
     if sel == "3": select_job()

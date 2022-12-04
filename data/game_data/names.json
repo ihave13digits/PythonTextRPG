@@ -1,0 +1,47 @@
+{
+"dwarf" : {
+    "f" : ["Anna", "Beatrice", "Isabelle", "Rosanna"],
+    "m" : ["Abraham", "Alexander", "Harold", "Thomas"],
+    "l" : ["Blackbeard", "Groundwater", "Rockbeard", "Stonesplitter"]
+    },
+"human" : {
+    "f" : ["Abigail", "Anna", "Beatrice", "Isabelle", "Rosanna"],
+    "m" : ["Abraham", "Alexander", "Harold", "Phineas", "Thomas"],
+    "l" : ["Black", "Carpenter", "Miller", "Smith", "Stone"]
+    },
+"giant" : {
+    "f" : ["Anna", "Beatrice", "Isabelle", "Rosanna"],
+    "m" : ["Abraham", "Alexander", "Harold", "Thomas"],
+    "l" : ["Blackbeard", "Groundwater", "Rockbeard", "Stonesplitter"]
+    },
+"gnome" : {
+    "f" : ["Abelia", "Aeliana", "Fiona", "Gaia", "Persephone"],
+    "m" : ["Arram", "Demetrius", "Icarus", "Nero", "Xerxes"],
+    "l" : ["Amaranta", "Ishanti", "Tarquin", "Zephyr", "Zotikos"]
+    },
+"elf" : {
+    "f" : ["Abelia", "Aeliana", "Avalon", "Fiona", "Gaia", "Persephone", "Valeria", "Viviana"],
+    "m" : ["Amadeus", "Caesar", "Cornelius", "Demetrius", "Evander", "Icarus", "Nero", "Odysseus", "Severus", "Xerxes"],
+    "l" : ["Amaranta", "Ishanti", "Castor", "Helios", "Maximus", "Tarquin", "Zephyr", "Zotikos"]
+    },
+"troll" : {
+    "f" : ["Anahita", "Arya", "Fiona", "Viviana"],
+    "m" : ["Aarav", "Lazarus", "Octavius", "Orpheus", "Romulus", "Titus"],
+    "l" : ["Amaranta", "Caxton", "Balthasar", "Maximus", "Tarquin", "Zotikos"]
+    },
+"goblin" : {
+    "f" : ["Ann", "Anna", "Ba", "Mahka", "Ogha", "Tha"],
+    "m" : ["Ahl", "Bohru", "Burhu", "Mohr", "Ogu", "Tuhl"],
+    "l" : ["Agkahnul", "Kahntoru", "Mulagahn", "Torahnul"]
+    },
+"orc" : {
+    "f" : ["An", "Ana", "Ba", "Maka", "Oga", "Ta"],
+    "m" : ["Al", "Bo", "Bu", "Mor", "Og", "Tul"],
+    "l" : ["Agka", "Agma", "Agta", "Kahn", "Kahnog", "Kahnul", "Kahnor", "Mulag", "Mulahn", "Mulor", "Torag", "Toran", "Tohror"]
+    },
+"ogre" : {
+    "f" : ["An", "Ana", "Ba", "Maka", "Oga", "Ta"],
+    "m" : ["Al", "Bo", "Bu", "Mor", "Og", "Tul"],
+    "l" : ["Ag", "Kan", "Mul", "Tor"]
+    }
+}

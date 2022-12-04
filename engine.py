@@ -1,15 +1,9 @@
 import time, random
 from os import path
 
-from names import *
-from mob import *
-from job import *
-from magic import *
-from item import *
-from world import *
-from quest import *
 from output import *
 from world_map import *
+from game_data import *
 
 from shop import Shop
 from entity import Entity
@@ -34,17 +28,6 @@ class Engine():
     def get_data_path(self):
         data_file = "slot-{}-{}".format(V.data_slot, V.data_file)
         return path.join(path.join(path.dirname(__file__), V.data_path), data_file)
-
-    def save_quest_data(self):
-        import json
-        for q in quest:
-            data_file = "{}.json".format(q)
-            data_path = path.join(path.join(path.dirname(__file__), V.quest_path), data_file)
-            try:
-                with open(data_path,"w") as f:
-                    json.dump(quest[q], f)
-            except FileNotFoundError:
-                T.text("Quest File at path '{}' Not Found".format(data_path))
 
     def load_quest_data(self):
         global quest
@@ -180,7 +163,7 @@ class Engine():
         for l in world:
             S = Shop(world[l]['shop']['gold'], world[l]['shop']['markup'])
             world[l]['shop'] = S.get_data()
-        self.load_quest_data()
+        #self.load_quest_data()
         V.state = 'quest'
         V.selected_quest = "Intro"
 
@@ -221,27 +204,35 @@ class Engine():
 
     def update(self):
         self.update_background()
+        #
         if V.state == "battle": battle()
+        elif V.state == "prepare_battle": prepare_battle()
+        #
         elif V.state == "quest": quest_menu()
+        elif V.state == "quest_history": quest_history()
+        #
+        elif V.state == "travel_menu": travel_menu()
+        #
         elif V.state == "item": player_item()
         elif V.state == "equip": equip()
         elif V.state == "craft": craft_item()
+        #
         elif V.state == "shop_buy": shop_buy()
         elif V.state == "shop_sell": shop_sell()
         elif V.state == "shop_menu": shop_menu()
-        elif V.state == "travel_menu": travel_menu()
-        elif V.state == "quest_history": quest_history()
+        #
         elif V.state == "set_speed": set_speed()
         elif V.state == "set_pause": set_pause()
         elif V.state == "set_margin": set_margin()
         elif V.state == "set_width": set_width()
         elif V.state == "set_color": set_color()
         elif V.state == "settings": settings()
-        elif V.state == "prepare_battle": prepare_battle()
+        #
         elif V.state == "level_up": level_up()
         elif V.state == "select_race": select_race()
         elif V.state == "select_job": select_job()
         elif V.state == "select_sex": select_sex()
+        #
         elif V.state == "inventory_menu": self.inventory_menu()
         elif V.state == "location_menu": self.location_menu()
         elif V.state == "main_menu": self.main_menu()
