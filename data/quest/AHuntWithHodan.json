@@ -12,7 +12,7 @@
 "4": {"part": "5", "prompt": "... ..."},
 "5": {"part": "6", "prompt": "..."},
 "6": {"part": "7", "prompt": "There, you see it?  I think if we wait just a bit, it'll come close enough for a throw."},
-"7": {"part": "8", "prompt": "Just make sure you run in and get the second shot by hand, or we'll be trackin' it fer the night."},
+"7": {"part": "8", "prompt": "Just make sure you run in and get the second shot by hand, or we'll be trackin' it fer the night.", "reward": {"skill": "hunt", "value": 5}},
 "8": {"part": "9", "prompt": "... ..."},
 "9": {"part": "10", "prompt": "..."},
 "10": {"part": "11", "prompt": "Hodan: Ha, we got it", "reward": {"stat": "exp", "value": 100}},

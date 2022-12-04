@@ -63,22 +63,40 @@ class Entity():
                 "ring7"      : 'nothing',
             }
         self.skills = {
-                "barter"   : 10,
-                "bluff"    : 10,
-                "build"    : 10,
-                "cast"     : 10,
-                "climb"    : 10,
-                "combat"   : 10,
-                "craft"    : 10,
-                "dodge"    : 10,
-                "forage"   : 10,
-                "heal"     : 10,
-                "hide"     : 10,
-                "hunt"     : 10,
-                "persuade" : 10,
-                "search"   : 10,
-                "sneak"    : 10,
-                "travel"   : 10,
+                "barter"   : 0,
+                "bluff"    : 0,
+                "build"    : 0,
+                "cast"     : 0,
+                "climb"    : 0,
+                "combat"   : 0,
+                "craft"    : 0,
+                "dodge"    : 0,
+                "forage"   : 0,
+                "heal"     : 0,
+                "hide"     : 0,
+                "hunt"     : 0,
+                "persuade" : 0,
+                "search"   : 0,
+                "sneak"    : 0,
+                "travel"   : 0,
+            }
+        self.skill_mod = {
+                "barter"   : 0,
+                "bluff"    : 0,
+                "build"    : 0,
+                "cast"     : 0,
+                "climb"    : 0,
+                "combat"   : 0,
+                "craft"    : 0,
+                "dodge"    : 0,
+                "forage"   : 0,
+                "heal"     : 0,
+                "hide"     : 0,
+                "hunt"     : 0,
+                "persuade" : 0,
+                "search"   : 0,
+                "sneak"    : 0,
+                "travel"   : 0,
             }
         self.jobs = {}
         self.spells = {}
@@ -151,6 +169,11 @@ class Entity():
         self.jobs = data["jobs"]
         self.spells = data["spells"]
         self.inventory = data["inventory"]
+
+    def get_skill(self, skill):
+        bonus = 0
+        if skill in jobs[self.job]['skill']:  bonus = jobs[self.job]['skill'][skill]
+        return self.skills[skill]+self.skill_mod[skill]+bonus
 
     def get_magic_bonus(self):
         bonus = int(((self.awareness*0.25)+(self.intelligence*0.5)+(self.dexterity*0.25))*0.1)
@@ -296,6 +319,10 @@ class Entity():
                 self.defense += value
             elif key == "spell":
                 self.add_spell(value)
+                passed = True
+        elif mode == 'skill':
+            if key in self.skills:
+                self.skills[key] += value
         elif mode == 'item':
             if key in items:
                 for i in range(value):
@@ -344,6 +371,23 @@ class Entity():
         self.magic = int(mobs[self.race]['mag']*(((self.awareness*0.11)+(self.intelligence*0.22)+(self.dexterity*0.11))*0.25))
         self.attack = int(mobs[self.race]['atk']*(((self.strength*0.22)+(self.constitution*0.11)+(self.dexterity*0.11))*0.25))
         self.defense = int(mobs[self.race]['def']*(((self.strength*0.11)+(self.constitution*0.11)+(self.dexterity*0.22))*0.25))
+        
+        self.skills['barter'] = (self.charisma*1.5)
+        self.skills['bluff'] = (self.charisma*0.5)+(self.constitution*0.5)
+        self.skills['build'] = (self.dexterity*0.33)+(self.constitution*0.33)+(self.strength*0.33)
+        self.skills['cast'] = (self.magic*0.33)+(self.dexterity*0.33)+(self.intelligence*0.33)
+        self.skills['climb'] = (self.awareness*0.33)+(self.strength*0.33)+(self.dexterity*0.33)
+        self.skills['combat'] = (self.awareness*0.25)+(self.attack*0.25)+(self.defense*0.25)+(self.dexterity*0.25)
+        self.skills['craft'] = (self.dexterity*0.5)+(self.intelligence*0.5)
+        self.skills['dodge'] = (self.awareness*0.5)+(self.dexterity*0.5)
+        self.skills['forage'] = (self.awareness*0.5)+(self.dexterity*0.5)
+        self.skills['heal'] = (self.awareness*0.5)+(self.dexterity*0.5)
+        self.skills['hide'] = (self.awareness*0.5)+(self.intelligence*0.5)
+        self.skills['hunt'] = (self.awareness*0.5)+(self.dexterity*0.5)
+        self.skills['persuade'] = (self.awareness*0.5)+(self.charisma*0.5)
+        self.skills['search'] = (self.awareness*0.5)+(self.intelligence*0.5)
+        self.skills['sneak'] = (self.awareness*0.5)+(self.dexterity*0.5)
+        self.skills['travel'] = (self.awareness*1.5)
 
     def gain_experience(self, xp):
         self.exp = int(self.exp+xp)
