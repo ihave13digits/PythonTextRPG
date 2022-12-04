@@ -170,7 +170,7 @@ class Entity():
     def get_skill(self, skill):
         bonus = 0
         if skill in jobs[self.job]['skill']:  bonus = jobs[self.job]['skill'][skill]
-        return self.skills[skill]+self.skill_mod[skill]+bonus
+        return int(self.skills[skill]+self.skill_mod[skill]+bonus)
 
     def get_magic_bonus(self):
         bonus = int(((self.awareness*0.25)+(self.intelligence*0.5)+(self.dexterity*0.25))*0.1)
@@ -296,24 +296,15 @@ class Entity():
 
     def reward(self, mode, key, value):
         if mode == 'stat':
-            if key == "gold":
-                self.gold += value
-            elif key == "exp":
-                self.exp += value
-            elif key == "hp":
-                self.hp += value
-            elif key == "mp":
-                self.mp += value
-            elif key == "HP":
-                self.HP += value
-            elif key == "MP":
-                self.MP += value
-            elif key == "mag":
-                self.magic += value
-            elif key == "atk":
-                self.attack += value
-            elif key == "def":
-                self.defense += value
+            if key == "gold": self.gold += value
+            elif key == "exp": self.gain_experience(value)
+            elif key == "hp": self.hp += value
+            elif key == "mp": self.mp += value
+            elif key == "HP": self.HP += value
+            elif key == "MP": self.MP += value
+            elif key == "mag": self.magic += value
+            elif key == "atk": self.attack += value
+            elif key == "def": self.defense += value
             elif key == "spell":
                 self.add_spell(value)
                 passed = True
@@ -331,22 +322,14 @@ class Entity():
             if key == "gold" and self.gold >= value:
                 self.gold -= value
                 passed = True
-            elif key == "exp" and self.exp >= value:
-                passed = True
-            elif key == "hp" and self.hp >= value:
-                passed = True
-            elif key == "mp" and self.mp >= value:
-                passed = True
-            elif key == "HP" and self.HP >= value:
-                passed = True
-            elif key == "MP" and self.MP >= value:
-                passed = True
-            elif key == "mag" and self.magic >= value:
-                passed = True
-            elif key == "atk" and self.attack >= value:
-                passed = True
-            elif key == "def" and self.defense >= value:
-                passed = True
+            elif key == "exp" and self.exp >= value: passed = True
+            elif key == "hp" and self.hp >= value: passed = True
+            elif key == "mp" and self.mp >= value: passed = True
+            elif key == "HP" and self.HP >= value: passed = True
+            elif key == "MP" and self.MP >= value: passed = True
+            elif key == "mag" and self.magic >= value: passed = True
+            elif key == "atk" and self.attack >= value: passed = True
+            elif key == "def" and self.defense >= value: passed = True
             elif key == "spell" and value in self.spells:
                 self.use_spell(value, Entity("Mob", "human", "m"))
                 passed = True
@@ -369,22 +352,22 @@ class Entity():
         self.attack = int(mobs[self.race]['atk']*(((self.strength*0.22)+(self.constitution*0.11)+(self.dexterity*0.11))*0.25))
         self.defense = int(mobs[self.race]['def']*(((self.strength*0.11)+(self.constitution*0.11)+(self.dexterity*0.22))*0.25))
         
-        self.skills['barter'] = (self.charisma*1.5)
-        self.skills['bluff'] = (self.charisma*0.5)+(self.constitution*0.5)
-        self.skills['build'] = (self.dexterity*0.33)+(self.constitution*0.33)+(self.strength*0.33)
-        self.skills['cast'] = (self.magic*0.33)+(self.dexterity*0.33)+(self.intelligence*0.33)
-        self.skills['climb'] = (self.awareness*0.33)+(self.strength*0.33)+(self.dexterity*0.33)
-        self.skills['combat'] = (self.awareness*0.25)+(self.attack*0.25)+(self.defense*0.25)+(self.dexterity*0.25)
-        self.skills['craft'] = (self.dexterity*0.5)+(self.intelligence*0.5)
-        self.skills['dodge'] = (self.awareness*0.5)+(self.dexterity*0.5)
-        self.skills['forage'] = (self.awareness*0.5)+(self.dexterity*0.5)
-        self.skills['heal'] = (self.awareness*0.5)+(self.dexterity*0.5)
-        self.skills['hide'] = (self.awareness*0.5)+(self.intelligence*0.5)
-        self.skills['hunt'] = (self.awareness*0.5)+(self.dexterity*0.5)
-        self.skills['persuade'] = (self.awareness*0.5)+(self.charisma*0.5)
-        self.skills['search'] = (self.awareness*0.5)+(self.intelligence*0.5)
-        self.skills['sneak'] = (self.awareness*0.5)+(self.dexterity*0.5)
-        self.skills['travel'] = (self.awareness*1.5)
+        self.skills['barter'] = int(self.charisma*1.5)
+        self.skills['bluff'] = int(self.charisma*0.5)+(self.constitution*0.5)
+        self.skills['build'] = int(self.dexterity*0.5)+(self.constitution*0.25)+(self.strength*0.25)
+        self.skills['cast'] = int(self.magic*0.5)+(self.dexterity*0.25)+(self.intelligence*0.25)
+        self.skills['climb'] = int(self.awareness*0.2)+(self.strength*0.4)+(self.dexterity*0.4)
+        self.skills['combat'] = int(self.awareness*0.25)+(self.attack*0.25)+(self.defense*0.25)+(self.dexterity*0.25)
+        self.skills['craft'] = int(self.dexterity*0.5)+(self.intelligence*0.5)
+        self.skills['dodge'] = int(self.awareness*0.5)+(self.dexterity*0.5)
+        self.skills['forage'] = int(self.awareness*0.5)+(self.dexterity*0.5)
+        self.skills['heal'] = int(self.awareness*0.5)+(self.dexterity*0.5)
+        self.skills['hide'] = int(self.awareness*0.5)+(self.intelligence*0.5)
+        self.skills['hunt'] = int(self.awareness*0.5)+(self.dexterity*0.5)
+        self.skills['persuade'] = int(self.awareness*0.5)+(self.charisma*0.5)
+        self.skills['search'] = int(self.awareness*0.5)+(self.intelligence*0.5)
+        self.skills['sneak'] = int(self.awareness*0.5)+(self.dexterity*0.5)
+        self.skills['travel'] = int(self.awareness*1.5)
 
     def gain_experience(self, xp):
         self.exp = int(self.exp+xp)

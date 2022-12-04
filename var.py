@@ -147,16 +147,23 @@ class Var():
                 selecting = False
         return selection
 
-    def roll_skill(self, entity, skill):
-        return bool(random.randint(0, 100) < entity.get_skill(skill))
+    def roll_skill(self, entity, skill, rate=100):
+        return bool(random.randint(0, rate) < entity.get_skill(skill))
 
     ##
     ### Entity Tools
     ##
     
-    def entity_stats(self, entity, menu):
+    def display_entity(self, entity, menu):
         self.display_stats(entity)
         self.display_skills(entity)
+        sel = T.input("\n: ")
+        spending_points = bool(entity.points > 0 or entity.skill_points > 0)
+        if spending_points:
+            self.state = "level_up"
+    
+    def entity_stats(self, entity, menu):
+        self.display_stats(entity)
         sel = T.input("\n: ")
         spending_points = bool(entity.points > 0)
         while spending_points > 0:
@@ -165,7 +172,6 @@ class Var():
                 self.state = menu
                 return
             self.display_stats(entity)
-            self.display_skills(entity)
             T.print("(1) Strength\n(2) Constitution\n(3) Dexterity\n(4) Awareness\n(5) Intelligence\n(6) Charisma\n(0) Back", "\n", self.c_text2)
             sel = T.input(": ")
             if sel == "0":
@@ -200,8 +206,11 @@ class Var():
             for s in entity.skill_mod:
                 T.expanded_text("({})".format(s), entity.get_skill(s), " ", self.c_text2)
             T.print("(0) Done")
+            T.print("Remaining Points: {}".format(entity.skill_points))
             sel = T.input(": ")
-            if sel == "0": self.state = menu
+            if sel == "0":
+                self.state = menu
+                break
             else:
                 if sel in entity.skill_mod and entity.skill_points > 0:
                     entity.skill_mod[sel] += 1
@@ -223,6 +232,7 @@ class Var():
         T.print("\nGold:{}{}".format(" "*(T.menu_width-(len("Gold:")+len(str(entity.gold)))), entity.gold), "\n", self.c_text1)
         T.print("Level:{}{}".format(" "*(T.menu_width-(len("Level:")+len(str(entity.level)))), entity.level), "\n", self.c_text1)
         T.print("Points:{}{}".format(" "*(T.menu_width-(len("Points:")+len(str(entity.points)))), entity.points), "\n", self.c_text1)
+        T.print("Skill Points:{}{}".format(" "*(T.menu_width-(len("Skill Points:")+len(str(entity.skill_points)))), entity.skill_points), "\n", self.c_text1)
         T.print("Experience:{}{}".format(" "*(T.menu_width-(len("Experience:")+len(exp))), exp), "\n", self.c_text1)
         T.print("\nHealth:{}{}".format(" "*(T.menu_width-(len("Health:")+len(ehp))), ehp), "\n", self.c_text1)
         T.print("Mana:{}{}".format(" "*(T.menu_width-(len("Mana:")+len(emp))), emp), "\n", self.c_text1)

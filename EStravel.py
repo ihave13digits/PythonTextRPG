@@ -25,22 +25,22 @@ def travel_menu():
     sel = T.input(": ")
     if sel == "0": V.state = "location_menu"
     elif sel == "8" and "north" in world[V.location]['travel']:
-        if V.roll_skill(V.player, 'travel'):
+        if V.roll_skill(V.player, 'travel', world[V.location]['travel']['encounter']):
             V.state = "travel_menu"
             V.location = world[V.location]['travel']['north']
         else: V.state = "prepare_battle"
     elif sel == "2" and "south" in world[V.location]['travel']:
-        if V.roll_skill(V.player, 'travel'):
+        if V.roll_skill(V.player, 'travel', world[V.location]['travel']['encounter']):
             V.state = "travel_menu"
             V.location = world[V.location]['travel']['south']
         else: V.state = "prepare_battle"
     elif sel == "4" and "west" in world[V.location]['travel']:
-        if V.roll_skill(V.player, 'travel'):
+        if V.roll_skill(V.player, 'travel', world[V.location]['travel']['encounter']):
             V.state = "travel_menu"
             V.location = world[V.location]['travel']['west']
         else: V.state = "prepare_battle"
     elif sel == "6" and "east" in world[V.location]['travel']:
-        if V.roll_skill(V.player, 'travel'):
+        if V.roll_skill(V.player, 'travel', world[V.location]['travel']['encounter']):
             V.state = "travel_menu"
             V.location = world[V.location]['travel']['east']
         else: V.state = "prepare_battle"

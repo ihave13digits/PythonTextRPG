@@ -55,7 +55,7 @@ def select_job():
 
 def level_up():
     T.clear_text()
-    T.text("", "\n", V.c_text1)
+    #T.text("")
     T.print("(1) Points\n(2) Skills\n(3) Job\n(0) Done", "\n", V.c_text2)
     sel = T.input(": ")
     if sel == "0": V.state = "main_menu"

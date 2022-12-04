@@ -124,7 +124,7 @@ class Engine():
         sel = T.input(": ")
         if sel == "0": V.state = "exit"
         elif sel == "1": V.state = "prepare_battle"
-        elif sel == "2": V.entity_stats(V.player, "main_menu")
+        elif sel == "2": V.display_entity(V.player, "main_menu")
         elif sel == "3": V.state = "inventory_menu"
         elif sel == "4": V.state = "location_menu"
         elif sel == "5": V.state = "quest_history"
@@ -195,12 +195,24 @@ class Engine():
 
     def update_background(self):
         for l in world:
-            if random.randint(0, 1000) < world[l]['restock']:
+            if random.randint(0, 1000) < world[l]['shop'].get('restock', 0):
                 S = Shop(0, 0)
                 S.set_data(world[l]['shop'])
                 S.restock()
                 world[l]['shop'] = S.get_data()
         V.shop.set_data(world[V.location]['shop'])
+        for q in quest:
+            if 'unlock' in quest[q]:
+                can_unlock = True
+                if 'quest' in quest[q]['unlock']:
+                    for qst in quest[q]['unlock']['quest']:
+                        if not quest[qst]['completed']:
+                            can_unlock = False
+                if 'location' in quest[q]['unlock']:
+                    if V.location != quest[q]['unlock']['location']:
+                        can_unlock = False
+                if can_unlock:
+                    quest[q]['discovered'] = True
 
     def update(self):
         self.update_background()
@@ -241,8 +253,5 @@ class Engine():
         elif V.state == "exit": self.exit_menu()
 
     def start(self):
-        self.run()
-
-    def run(self):
         while V.running:
             self.update()
