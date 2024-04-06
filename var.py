@@ -14,12 +14,13 @@ class Var():
     def __init__(self):
         self.running = True
         self.ai_turn = True
-        self.data_slot = 0
+        self.data_slot = 1
+        self.frame_count = 0
         self.data_file = "main-PythonTextRPG-ihave13digits.json"
         self.data_path = "data/data"
         self.quest_path = "data/quest"
         self.game_path = "data/game_data"
-        self.state = "intro"
+        self.state = "startup"
         self.selected_quest = ""
         self.location = "Fairlanding"
         self.item_type = ""
@@ -58,6 +59,9 @@ class Var():
                     y += c
         return [int(x), int(y)]
 
+    def rest_player(self, duration):
+        self.player.rest(duration)
+
     def randomize_mob(self):
         race = world[V.location]['mobs'][random.randint(0, len(world[self.location]['mobs'])-1)]
         sex = random.choice(("m", "f"))
@@ -67,11 +71,12 @@ class Var():
             last_name = random.choice(names[race]['l'])
             name = "{} {}".format(first_name, last_name)
         self.mob = Entity(name, race, sex)
-        first_name = random.choice(names[race]['m'])
-        last_name = random.choice(names[race]['l'])
-        name = "{} {}".format(first_name, last_name)
+        #first_name = random.choice(names[race]['m'])
+        #last_name = random.choice(names[race]['l'])
+        #name = "{} {}".format(first_name, last_name)
         self.mob.randomize()
-        self.mob.gain_experience(random.randint(int(self.player.experience/2), int(self.player.experience)))
+        self.mob.gain_experience(random.randint(int(self.player.experience/2), int(self.player.experience*1.5)))
+        self.mob.rest(8)
 
     def inventory_selection(self, inventory, state, gold_txt='', mrk=1.0):
         selecting = True
@@ -82,7 +87,7 @@ class Var():
             T.print("Item Type: {}\n{}\n".format(self.item_type, gold_txt), "\n", self.c_text1)
             for i in inventory:
                 if items[i]['type'] == self.item_type:
-                    s_value = str(items[i]['value'])
+                    s_value = str(int(items[i]['value']*mrk))
                     s_hp = ''
                     s_mp = ''
                     s_HP = ''
@@ -119,7 +124,7 @@ class Var():
                         T.get_colored_text(inventory[i], self.c_count),
                         T.get_colored_text(i, self.c_text1),
                         " "*margin,
-                        T.get_colored_text(int((int(s_value)*mrk)), self.c_gold),
+                        T.get_colored_text(int((int(s_value))), self.c_gold),
                         T.get_colored_text(s_hp, self.c_attack),
                         T.get_colored_text(s_mp, self.c_magic),
                         T.get_colored_text(s_HP, self.c_attack),
@@ -148,6 +153,7 @@ class Var():
         return selection
 
     def roll_skill(self, entity, skill, rate=100):
+        input("{}/{}".format(entity.get_skill(skill), rate))
         return bool(random.randint(0, rate) < entity.get_skill(skill))
 
     ##
@@ -155,8 +161,20 @@ class Var():
     ##
     
     def display_entity(self, entity, menu):
+        entity.gain_experience(0)
         self.display_stats(entity)
+        sel = T.input("\n: ")
+        T.clear_text()
+        T.print("Skills")
         self.display_skills(entity)
+        sel = T.input("\n: ")
+        T.clear_text()
+        T.print("Spells")
+        self.display_spells(entity)
+        sel = T.input("\n: ")
+        T.clear_text()
+        T.print("Jobs")
+        self.display_jobs(entity)
         sel = T.input("\n: ")
         spending_points = bool(entity.points > 0 or entity.skill_points > 0)
         if spending_points:
@@ -189,7 +207,7 @@ class Var():
                 entity.awareness += 1
                 entity.points -= 1
             elif sel == "5":
-                entity.wisdom += 1
+                entity.intelligence += 1
                 entity.points -= 1
             elif sel == "6":
                 entity.charisma += 1
@@ -255,5 +273,16 @@ class Var():
             if count % int(T.menu_width/16) == 0:
                 T.print()
             count += 1
+        T.print()
+    
+    def display_spells(self, entity):
+        T.print()
+        for s in entity.spells:
+            T.print("{}{}{}".format(s," "*(T.menu_width-(len(s)+len(str(entity.spells[s])))), entity.spells[s]), "\n", self.c_text1)
+    
+    def display_jobs(self, entity):
+        T.print()
+        for j in entity.jobs:
+            T.print("{}{}{}".format(j," "*(T.menu_width-(len(j)+len(str(entity.jobs[j])))), entity.jobs[j]), "\n", self.c_text1)
 
 V = Var()

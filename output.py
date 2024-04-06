@@ -1,12 +1,14 @@
 from os import system, environ
 from sys import stdin, stdout, platform
 import textwrap, time
+#import androidhelper
 
 from color import *
 
 class Text():
 
     def __init__(self):
+        #self.droid = androidhelper.Android()
         self.text_speed = 0.03
         self.text_pause = 0.3
         self.menu_width = 48
@@ -68,5 +70,9 @@ class Text():
         else:
             input(": ")
         print("\n"*self.text_margin, end="")
+        
+        
+        #self.droid.ttsSpeak(text)
+
 
 T = Text()

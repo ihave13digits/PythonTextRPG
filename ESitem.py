@@ -7,20 +7,37 @@ def player_item():
         V.player.use_item(sel)
         T.text("{} used {}".format(V.player.name, sel))
 
+def show_recipe(r):
+    T.clear_text()
+    T.print(r, "\n\n", V.c_text1)
+    T.print("Requires:", "\n", V.c_text1)
+    for i in crafting[r]['take']:
+        T.print("  {} {}".format(i, crafting[r]['take'][i]), "\n", V.c_text1)
+    T.print("Produces:", "\n", V.c_text1)
+    for i in crafting[r]['give']:
+        T.print("  {} {}".format(i, crafting[r]['give'][i]), "\n", V.c_text1)
+    T.print("\n(1) Craft\n(0) Back", "\n", V.c_text2)
+    sel = T.input(": ")
+    if sel == "0": return
+    if sel == '1': V.player.craft_item(r)
+    show_recipe(r)
+
 def craft_item():
+    craftable = []
     T.clear_text()
     for i in crafting:
         if V.player.can_craft_item(i):
-            T.print("{}".format(i), "\n", V.c_text2)
+            if not i in craftable:
+                craftable.append(i)
+    for i in craftable:
+        T.print("{}".format(i), "\n", V.c_text2)
     T.print("(0) Back", "\n", V.c_text2)
     sel = T.input(": ")
     if sel == "0":
         V.state = "inventory_menu"
         return
-    if sel in crafting and V.player.can_craft_item(sel):
-        V.player.craft_item(sel)
-
-
+    if sel in craftable:
+        show_recipe(sel)
 
 def equip():
     part = ""

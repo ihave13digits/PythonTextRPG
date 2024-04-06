@@ -10,10 +10,11 @@ class Entity():
         self.name = NAME
         self.race = RACE
         self.sex = SEX
-        self.job = ""
+        self.job = "fighter"
         self.level = 1
         self.points = 0
         self.skill_points = 0
+        self.job_points = 0
         self.exp = 0
         self.level_up = mobs[RACE]['lup']
         self.experience = 0
@@ -98,6 +99,7 @@ class Entity():
         self.jobs = {}
         self.spells = {}
         self.inventory = {}
+        self.proficiency = {}
         
         self.calculate_derived()
         self.hp = self.HP
@@ -111,6 +113,7 @@ class Entity():
                 "job"          : self.job,
                 "points"       : self.points,
                 "skill_points" : self.skill_points,
+                "job_points"   : self.job_points,
                 "level"        : self.level,
                 "exp"          : self.exp,
                 "level_up"     : self.level_up,
@@ -119,6 +122,10 @@ class Entity():
                 "HP"           : self.HP,
                 "mp"           : self.mp,
                 "MP"           : self.MP,
+                "poisoned"     : self.poisoned,
+                "confused"     : self.confused,
+                "stunned"      : self.stunned,
+                "burned"       : self.burned,
                 "magic"        : self.magic,
                 "attack"       : self.attack,
                 "defense"      : self.defense,
@@ -131,9 +138,11 @@ class Entity():
                 "gold"         : self.gold,
                 "equip"        : self.equip,
                 "skills"       : self.skills,
+                "skill_mod"    : self.skill_mod,
                 "jobs"         : self.jobs,
                 "spells"       : self.spells,
                 "inventory"    : self.inventory,
+                "proficiency"    : self.proficiency,
             }
 
     def set_data(self, data):
@@ -143,6 +152,7 @@ class Entity():
         self.job = data["job"]
         self.points = data["points"]
         self.skill_points = data["skill_points"]
+        self.job_points = data["job_points"]
         self.level = data["level"]
         self.exp = data["exp"]
         self.level_up = data["level_up"]
@@ -151,6 +161,10 @@ class Entity():
         self.HP = data["HP"]
         self.mp = data["mp"]
         self.MP = data["MP"]
+        self.poisoned = data["poisoned"]
+        self.confused = data["confused"]
+        self.stunned = data["stunned"]
+        self.burned = data["burned"]
         self.magic = data["magic"]
         self.attack = data["attack"]
         self.defense = data["defense"]
@@ -163,9 +177,11 @@ class Entity():
         self.gold = data["gold"]
         self.equip = data["equip"]
         self.skills = data["skills"]
+        self.skill_mod = data["skill_mod"]
         self.jobs = data["jobs"]
         self.spells = data["spells"]
         self.inventory = data["inventory"]
+        self.proficiency = data["proficiency"]
 
     def get_skill(self, skill):
         bonus = 0
@@ -197,6 +213,15 @@ class Entity():
     def get_armor(self):
         return self.defense+self.get_defense_bonus()
 
+    def rest(self, duration):
+        d = min(duration, 8)/8
+        self.hp = int(self.hp + (self.HP-self.hp) * d)
+        self.mp = int(self.mp + (self.MP-self.mp) * d)
+        self.poisoned = False
+        self.confused = False
+        self.stunned = False
+        self.burned = False
+
     def take_stat_damage(self):
         if self.burned:
             T.text("{} took {} burn damage".format(self.name, 1))
@@ -219,7 +244,7 @@ class Entity():
     def use_spell(self, spell, entity):
         if self.mp >= magic[spell]['cost']:
             if "hp" in magic[spell]: entity.hp = min(entity.hp+(int(magic[spell]["hp"]*(self.spells[spell]*0.2))+self.get_magic_bonus()), entity.HP)
-            if "damage" in magic[spell]: entity.take_damage(int(self.get_magic_damage(spell)*(self.spells[spell]*0.2)))
+            if "damage" in magic[spell]: entity.take_damage(int(self.get_magic_damage(spell)*(self.spells[spell])))
             if "poisoned" in magic[spell]: entity.poisoned = magic[spell]['poisoned']
             if "confused" in magic[spell]: entity.confused = magic[spell]['confused']
             if "stunned" in magic[spell]: entity.stunned = magic[spell]['stunned']
@@ -346,8 +371,8 @@ class Entity():
         return passed
 
     def calculate_derived(self):
-        self.HP = int(mobs[self.race]['hp']*(((self.strength*0.5)+(self.constitution*0.5))*0.25))
-        self.MP = int(mobs[self.race]['mp']*(((self.awareness*0.5)+(self.intelligence*0.5))*0.25))
+        self.HP = int(mobs[self.race]['hp']*(((self.strength*0.5)+(self.constitution*0.5))*0.25)*(self.level*0.125))
+        self.MP = int(mobs[self.race]['mp']*(((self.awareness*0.5)+(self.intelligence*0.5))*0.25)*(self.level*0.125))
         self.magic = int(mobs[self.race]['mag']*(((self.awareness*0.11)+(self.intelligence*0.22)+(self.dexterity*0.11))*0.25))
         self.attack = int(mobs[self.race]['atk']*(((self.strength*0.22)+(self.constitution*0.11)+(self.dexterity*0.11))*0.25))
         self.defense = int(mobs[self.race]['def']*(((self.strength*0.11)+(self.constitution*0.11)+(self.dexterity*0.22))*0.25))
@@ -369,6 +394,14 @@ class Entity():
         self.skills['sneak'] = int(self.awareness*0.5)+(self.dexterity*0.5)
         self.skills['travel'] = int(self.awareness*1.5)
 
+    def weapon_proficiency(self, hand):
+        i = self.equip[hand]
+        if i in self.proficiency:
+            if self.proficiency[i] < 100:
+                self.proficiency[i] += 1
+        else:
+            self.proficiency[i] = 1
+
     def gain_experience(self, xp):
         self.exp = int(self.exp+xp)
         while self.exp >= self.level_up:
@@ -382,6 +415,7 @@ class Entity():
         self.skill_points += int((self.intelligence*0.75)+(self.awareness*0.25)*0.5)
         if self.level % mobs[self.race]['point'] == 0:
             self.points += 1
+        self.job_points += 1
         if self.is_ai:
             self.auto_level()
         self.calculate_derived()
@@ -402,6 +436,9 @@ class Entity():
         while self.skill_points > 0:
             self.skills[random.choice(skills)] += 1
             self.skill_points -= 1
+        while self.job_points > 0:
+            self.job = random.choice(selectable_jobs)
+            self.job_points -= 1
 
     def auto_equip(self):
         to_cull = []
@@ -422,41 +459,62 @@ class Entity():
             self.equip_item(i[0], i[1])
 
     def randomize(self):
-        equip_head = []
-        equip_neck = []
-        equip_shoulders = []
-        equip_torso = []
-        equip_waist = []
-        equip_arms = []
-        equip_hands = []
-        equip_legs = []
-        equip_feet = []
-        scrolls = []
-        weapons = []
-        misc = []
         self.hp = self.HP
         self.mp = self.MP
         self.inventory = {}
-        self.gold += random.randint(0, 15)*10
-        for i in items:
-            if i != "nothing":
-                if random.randint(0, 2500) < items[i]['rarity']:
-                    if items[i]['type'] == "scroll": scrolls.append(i)
-                    elif items[i]['type'] == "arms": weapons.append(i)
-                    elif items[i]['type'] == "food" or items[i]['type'] == "potion": misc.append(i)
-                    elif items[i]['type'] == "armor":
-                        if items[i]['slot'] == "head": equip_head.append(i)
-                        if items[i]['slot'] == "neck": equip_neck.append(i)
-                        if items[i]['slot'] == "shoulders": equip_shoulders.append(i)
-                        if items[i]['slot'] == "torso": equip_torso.append(i)
-                        if items[i]['slot'] == "waist": equip_waist.append(i)
-                        if items[i]['slot'] == "arms": equip_arms.append(i)
-                        if items[i]['slot'] == "hands": equip_hands.append(i)
-                        if items[i]['slot'] == "legs": equip_legs.append(i)
-                        if items[i]['slot'] == "feet": equip_feet.append(i)
+        misc = []
+        scrolls = []
+        if self.race in playable_mobs:
+            equip_head = []
+            equip_neck = []
+            equip_shoulders = []
+            equip_torso = []
+            equip_waist = []
+            equip_arms = []
+            equip_hands = []
+            equip_legs = []
+            equip_feet = []
+            weapons = []
+            self.gold += random.randint(0, 15)*10
+            for i in items:
+                if i != "nothing":
+                    if random.randint(0, 2500) < items[i]['rarity']:
+                        if items[i]['type'] == "scroll": scrolls.append(i)
+                        elif items[i]['type'] == "arms": weapons.append(i)
+                        elif items[i]['type'] == "food" or items[i]['type'] == "potion": misc.append(i)
+                        elif items[i]['type'] == "armor":
+                            if items[i]['slot'] == "head": equip_head.append(i)
+                            if items[i]['slot'] == "neck": equip_neck.append(i)
+                            if items[i]['slot'] == "shoulders": equip_shoulders.append(i)
+                            if items[i]['slot'] == "torso": equip_torso.append(i)
+                            if items[i]['slot'] == "waist": equip_waist.append(i)
+                            if items[i]['slot'] == "arms": equip_arms.append(i)
+                            if items[i]['slot'] == "hands": equip_hands.append(i)
+                            if items[i]['slot'] == "legs": equip_legs.append(i)
+                            if items[i]['slot'] == "feet": equip_feet.append(i)
+            # Weapon
+            if random.randint(0, 100) < 75 and weapons: self.add_item(random.choice(weapons))
+            # Armor
+            if random.randint(0, 100) < 75 and equip_head: self.add_item(random.choice(equip_head))
+            if random.randint(0, 100) < 75 and equip_neck: self.add_item(random.choice(equip_neck))
+            if random.randint(0, 100) < 75 and equip_shoulders: self.add_item(random.choice(equip_shoulders))
+            if random.randint(0, 100) < 75 and equip_torso: self.add_item(random.choice(equip_torso))
+            if random.randint(0, 100) < 75 and equip_waist: self.add_item(random.choice(equip_waist))
+            if random.randint(0, 100) < 75 and equip_arms: self.add_item(random.choice(equip_arms))
+            if random.randint(0, 100) < 75 and equip_hands: self.add_item(random.choice(equip_hands))
+            if random.randint(0, 100) < 75 and equip_legs: self.add_item(random.choice(equip_legs))
+            if random.randint(0, 100) < 75 and equip_feet: self.add_item(random.choice(equip_feet))
+        else:
+            self.equip["torso"] = "nothing"
+            self.equip["legs"] = "nothing"
+            for i in items:
+                if i != "nothing":
+                    if random.randint(0, 2500) < items[i]['rarity']:
+                        if items[i]['type'] == "material": misc.append(i)
         # Food / Potions
         for i in misc:
             if random.randint(0, 100) < 50: self.add_item(i)
+        self.auto_equip()
         # Magic
         for i in range(self.magic):
             s = random.randint(0, len(scrolls))
@@ -466,17 +524,3 @@ class Entity():
                     self.add_item(scrolls[s])
                     scrolls.remove(s)
                 except: pass
-        # Weapon
-        if random.randint(0, 100) < 75 and weapons: self.add_item(random.choice(weapons))
-        # Armor
-        if random.randint(0, 100) < 75 and equip_head: self.add_item(random.choice(equip_head))
-        if random.randint(0, 100) < 75 and equip_neck: self.add_item(random.choice(equip_neck))
-        if random.randint(0, 100) < 75 and equip_shoulders: self.add_item(random.choice(equip_shoulders))
-        if random.randint(0, 100) < 75 and equip_torso: self.add_item(random.choice(equip_torso))
-        if random.randint(0, 100) < 75 and equip_waist: self.add_item(random.choice(equip_waist))
-        if random.randint(0, 100) < 75 and equip_arms: self.add_item(random.choice(equip_arms))
-        if random.randint(0, 100) < 75 and equip_hands: self.add_item(random.choice(equip_hands))
-        if random.randint(0, 100) < 75 and equip_legs: self.add_item(random.choice(equip_legs))
-        if random.randint(0, 100) < 75 and equip_feet: self.add_item(random.choice(equip_feet))
-        
-        self.auto_equip()

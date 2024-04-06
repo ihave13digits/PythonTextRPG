@@ -50,15 +50,31 @@ def select_job():
     sel = T.input(": ")
     if sel in jobs:
         V.player.job = sel
+        if V.player.job in V.player.jobs:
+            V.player.jobs[sel] += 1
+            V.player.job_points -= 1
+        else:
+            V.player.jobs[sel] = 1
+            V.player.job_points -= 1
+        
     if sel == "0" and V.player.job != "":
         V.state = "level_up"
 
 def level_up():
     T.clear_text()
-    #T.text("")
-    T.print("(1) Points\n(2) Skills\n(3) Job\n(0) Done", "\n", V.c_text2)
+    count = 1
+    p_txt = ""
+    if V.player.points > 0:
+        p_txt = "(1) Points\n"
+    s_txt = ""
+    if V.player.skill_points > 0:
+        s_txt = "(2) Skills\n"
+    j_txt = ""
+    if V.player.job_points > 0:
+        j_txt = "(3) Job\n"
+    T.print("{}{}{}(0) Done".format(p_txt,s_txt,j_txt), "\n", V.c_text2)
     sel = T.input(": ")
-    if sel == "0": V.state = "main_menu"
-    if sel == "1": V.entity_stats(V.player, "level_up")
-    if sel == "2": V.entity_skills(V.player, "level_up")
-    if sel == "3": select_job()
+    if sel == "0" and V.player.job_points <= 0: V.state = "main_menu"
+    if sel == "1" and V.player.points > 0: V.entity_stats(V.player, "level_up")
+    if sel == "2" and V.player.skill_points > 0: V.entity_skills(V.player, "level_up")
+    if sel == "3" and V.player.job_points > 0: select_job()

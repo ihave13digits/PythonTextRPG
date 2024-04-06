@@ -8,6 +8,7 @@ class Shop():
         self.gold = GOLD
         self.markup = MARKUP
         self.inventory = {}
+        self.item_types = []
         for i in range(STOCK):
             self.restock()
 
@@ -16,12 +17,15 @@ class Shop():
                 "gold" : self.gold,
                 "markup" : self.markup,
                 "inventory" : self.inventory,
+                "item_types" : self.item_types,
             }
 
     def set_data(self, data):
         self.gold = data['gold']
         self.markup = data['markup']
         self.inventory = data['inventory']
+        self.item_types = data['item_types']
+        #input(self.item_types)
 
     def get_item_value(self, item):
         return items[item]['value']*self.markup

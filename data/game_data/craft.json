@@ -1,6 +1,12 @@
 {
-"iron ingot"                : {"craft":15, "take":{"iron bar":5}, "give":{"iron ingot":1}},
-"steel ingot"               : {"craft":20, "take":{"steel bar":5}, "give":{"steel ingot":1}},
+"iron nugget"               : {"craft":15, "take":{"iron ore":5}, "give":{"iron nugget":2}},
+"copper nugget"             : {"craft":10, "take":{"copper ore":5}, "give":{"copper nugget":2}},
+"bronze nugget"             : {"craft":15, "take":{"bronze ore":5}, "give":{"bronze nugget":2}},
+"silver nugget"             : {"craft":10, "take":{"silver ore":5}, "give":{"silver nugget":2}},
+"gold nugget"               : {"craft":15, "take":{"gold ore":5}, "give":{"gold nugget":1}},
+"mythril nugget"            : {"craft":25, "take":{"mytrhril ore":5}, "give":{"mythril nugget":2}},
+"iron ingot"                : {"craft":15, "take":{"iron nugget":5}, "give":{"iron ingot":1}},
+"steel ingot"               : {"craft":20, "take":{"iron nugget":5, "charcoal": 1}, "give":{"steel ingot":1}},
 "copper ingot"              : {"craft":10, "take":{"copper bar":5}, "give":{"copper ingot":1}},
 "bronze ingot"              : {"craft":15, "take":{"bronze bar":5}, "give":{"bronze ingot":1}},
 "silver ingot"              : {"craft":10, "take":{"silver bar":5}, "give":{"silver ingot":1}},
@@ -55,9 +61,12 @@
 "silver jump rings"         : {"craft":10, "take":{"spool of silver wire":1}, "give":{"silver jump rings":50}},
 "gold jump rings"           : {"craft":15, "take":{"spool of gold wire":1}, "give":{"gold jump rings":50}},
 "mythril jump rings"        : {"craft":25, "take":{"spool of mytrhril wire":1}, "give":{"mythril jump rings":50}},
+"charcoal"                  : {"craft":15, "take":{"wood":1}, "give":{"charcoal":8}},
 "cloth"                     : {"craft":15, "take":{"string":8}, "give":{"cloth":1}},
 "rope"                      : {"craft":10, "take":{"string":6}, "give":{"rope":1}},
 "string"                    : {"craft":5, "take":{"flax":10}, "give":{"string":1}},
+
+
 
 "club"                       : {"craft":10, "take":{"wood":1}, "give":{"club":1}},
 "club +1"                    : {"craft":15, "take":{"cloth":1, "wood":1}, "give":{"club +1":1}},

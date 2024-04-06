@@ -1,4 +1,5 @@
 {
+"selectable_jobs"  : ["fighter","rogue","hunter","knight","barbarian","pickpocket","cleric","scout","druid","sorcerer","paladin","ranger","theif","wizard","assassin","warlord","warmage"],
 "" : {
     "stat" : {"hp" : 0, "mp" : 0, "mag" : 0, "atk" : 0, "def" : 0, "cha" : 0, "point" : 0},
     "skill" : {},

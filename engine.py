@@ -75,6 +75,12 @@ class Engine():
             json.dump(data, f)
             f.close()
 
+    def test_load_data(self):
+        import json
+        with open(self.get_data_path(),"r") as f:
+            data = json.loads(f.read())
+            V.mob.set_data(data['player'])
+
     def load_data(self):
         global world, quest
         import json
@@ -141,22 +147,41 @@ class Engine():
 
     def location_menu(self):
         T.clear_text()
-        T.print("(1) Travel\n(2) Shop\n(0) Back", "\n", V.c_text2)
+        T.print("(1) Travel\n(2) Shop\n(3) Rest\n(4) Forage\n(0) Back", "\n", V.c_text2)
         sel = T.input(": ")
         if sel == "0": V.state = "main_menu"
         elif sel == "1": V.state = "travel_menu"
         elif sel == "2": V.state = "shop_menu"
+        elif sel == "3":
+            if V.roll_skill(V.player, 'heal', world[V.location]['travel']['encounter']):
+                V.rest_player(8)
+                V.state = "main_menu"
+            else:
+                V.rest_player(random.randint(1,8))
+                V.state = "prepare_battle"
+        elif sel == "4":
+            if V.roll_skill(V.player, 'forage'):
+                plural= ""
+                f = random.choice(world[V.location]['forage'])
+                amnt = random.randint(1,items[f]['count'])
+                for i in range(amnt):
+                    V.player.add_item(f)
+                T.text(T.get_colored_text("{} foraged {} {}{}.".format(V.player.name, amnt, f, plural), V.c_text1))
+            else:
+                T.text(T.get_colored_text("{} failed to forage supplies.".format(V.player.name), V.c_text1))
 
     def exit_menu(self):
         T.text(T.get_colored_text("Are you sure you want to exit?", V.c_text1))
         T.clear_text()
-        T.print("(1) Exit Without Saving\n(2) Save And Exit\n(0) Cancel", "\n", V.c_text2)
+        T.print("(1) Exit Without Saving\n(2) Save And Exit\n(3) Save And Continue\n(0) Cancel", "\n", V.c_text2)
         sel = T.input(": ")
         if sel == "0": V.state = "main_menu"
         elif sel == "1": V.running = False
         elif sel == "2":
+            V.state = "save_game"
+        elif sel == "3":
             self.save_data()
-            V.running = False
+            V.state = "main_menu"
         T.clear_text()
 
     def new_game(self):
@@ -166,6 +191,41 @@ class Engine():
         #self.load_quest_data()
         V.state = 'quest'
         V.selected_quest = "Intro"
+
+    def show_data_slots(self):
+        for i in range (1,9):
+            txt = "Empty"
+            try:
+                V.data_slot = i
+                self.test_load_data()
+                txt = "{}  L:{}  G:{}".format(V.mob.name,V.mob.level,V.mob.gold)
+            except:
+                txt = "Empty"
+            T.print("({}) {}".format(i, txt), "\n", V.c_text2)
+
+    def load_game(self):
+        T.clear_text()
+        self.show_data_slots()
+        T.print("(0) Back", "\n", V.c_text2)
+        sel = T.input(": ")
+        if sel == "0": V.state = "intro"
+        elif sel=="1" or sel=="2" or sel=="3" or sel=="4" or sel=="5" or sel=="6" or sel=="7" or sel=="8" or sel=="9":
+            V.data_slot = int(sel)
+            try:
+                self.load_data()
+            except:
+                T.text("Error Loading Data")
+
+    def save_game(self):
+        T.clear_text()
+        self.show_data_slots()
+        T.print("(0) Back", "\n", V.c_text2)
+        sel = T.input(": ")
+        if sel == "0": V.state = "main_menu"
+        elif sel=="1" or sel=="2" or sel=="3" or sel=="4" or sel=="5" or sel=="6" or sel=="7" or sel=="8" or sel=="9":
+            V.data_slot = int(sel)
+            self.save_data()
+            V.running = False
 
     def intro(self):
         can_continue = False
@@ -187,7 +247,17 @@ class Engine():
             V.running = False
             T.clear_text()
         elif sel == "1": V.state = "select_race"
-        elif sel == "2" and can_continue: self.load_data()
+        elif sel == "2" and can_continue: V.state = "load_game"
+
+    def startup(self):
+        T.clear_text()
+        try: T.print(startup_anim[V.frame_count])
+        except: pass
+        if V.frame_count >= len(startup_anim):
+            V.state = "intro"
+            V.frame_count = 0
+        V.frame_count += 1
+        time.sleep(10.0/len(startup_anim))
 
     ##
     ### Update
@@ -200,7 +270,8 @@ class Engine():
                 S.set_data(world[l]['shop'])
                 S.restock()
                 world[l]['shop'] = S.get_data()
-        V.shop.set_data(world[V.location]['shop'])
+                if l == V.location:
+                    V.shop.set_data(world[V.location]['shop'])
         for q in quest:
             if 'unlock' in quest[q]:
                 can_unlock = True
@@ -248,7 +319,10 @@ class Engine():
         elif V.state == "inventory_menu": self.inventory_menu()
         elif V.state == "location_menu": self.location_menu()
         elif V.state == "main_menu": self.main_menu()
+        elif V.state == "load_game": self.load_game()
+        elif V.state == "save_game": self.save_game()
         elif V.state == "new_game": self.new_game()
+        elif V.state == "startup": self.startup()
         elif V.state == "intro": self.intro()
         elif V.state == "exit": self.exit_menu()
 
