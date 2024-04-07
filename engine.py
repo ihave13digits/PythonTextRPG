@@ -323,7 +323,6 @@ class Engine():
                         can_unlock = False
                 if can_unlock:
                     quest[q]['discovered'] = True
-        input(quest)
 
     def update(self):
         self.update_background()
