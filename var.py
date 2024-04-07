@@ -38,7 +38,7 @@ class Var():
         self.quest_hash = {
             'player_name' : self.player.name,
         }
-    
+
     ##
     ### Engine Tools
     ##
@@ -71,9 +71,6 @@ class Var():
             last_name = random.choice(names[race]['l'])
             name = "{} {}".format(first_name, last_name)
         self.mob = Entity(name, race, sex)
-        #first_name = random.choice(names[race]['m'])
-        #last_name = random.choice(names[race]['l'])
-        #name = "{} {}".format(first_name, last_name)
         self.mob.randomize()
         self.mob.gain_experience(random.randint(int(self.player.experience/2), int(self.player.experience*1.5)))
         self.mob.rest(8)
@@ -153,13 +150,13 @@ class Var():
         return selection
 
     def roll_skill(self, entity, skill, rate=100):
-        input("{}/{}".format(entity.get_skill(skill), rate))
+        input("Chance of {}: {}/{}".format(skill, entity.get_skill(skill), rate))
         return bool(random.randint(0, rate) < entity.get_skill(skill))
 
     ##
     ### Entity Tools
     ##
-    
+
     def display_entity(self, entity, menu):
         entity.gain_experience(0)
         self.display_stats(entity)
@@ -179,7 +176,7 @@ class Var():
         spending_points = bool(entity.points > 0 or entity.skill_points > 0)
         if spending_points:
             self.state = "level_up"
-    
+
     def entity_stats(self, entity, menu):
         self.display_stats(entity)
         sel = T.input("\n: ")
@@ -234,6 +231,9 @@ class Var():
                     entity.skill_mod[sel] += 1
                     entity.skill_points -= 1
 
+    def display_text(self, value, text):
+        T.print("{}:{}{}".format(text, " "*(T.menu_width-(len("{}:".format(text))+len(value))), value), "\n", self.c_text1)
+
     def display_stats(self, entity):
         T.clear_text()
         exp = "{}/{}".format(entity.exp, entity.level_up)
@@ -242,27 +242,30 @@ class Var():
         emg = "{} [{}]".format(entity.magic, entity.get_magic_bonus())
         eat = "{} [{}]".format(entity.attack, entity.get_attack_bonus())
         edf = "{} [{}]".format(entity.defense, entity.get_defense_bonus())
-        T.print("Location:{}{}".format(" "*(T.menu_width-(len("Location:")+len(V.location))), V.location), "\n", self.c_text1)
-        T.print("\nName:{}{}".format(" "*(T.menu_width-(len("Name:")+len(entity.name))), entity.name), "\n", self.c_text1)
-        T.print("Race:{}{}".format(" "*(T.menu_width-(len("Race:")+len(entity.race))), entity.race), "\n", self.c_text1)
-        T.print("Sex:{}{}".format(" "*(T.menu_width-(len("Sex:")+len(entity.sex))), entity.sex), "\n", self.c_text1)
-        T.print("Job:{}{}".format(" "*(T.menu_width-(len("Job:")+len(entity.job))), entity.job), "\n", self.c_text1)
-        T.print("\nGold:{}{}".format(" "*(T.menu_width-(len("Gold:")+len(str(entity.gold)))), entity.gold), "\n", self.c_text1)
-        T.print("Level:{}{}".format(" "*(T.menu_width-(len("Level:")+len(str(entity.level)))), entity.level), "\n", self.c_text1)
-        T.print("Points:{}{}".format(" "*(T.menu_width-(len("Points:")+len(str(entity.points)))), entity.points), "\n", self.c_text1)
-        T.print("Skill Points:{}{}".format(" "*(T.menu_width-(len("Skill Points:")+len(str(entity.skill_points)))), entity.skill_points), "\n", self.c_text1)
-        T.print("Experience:{}{}".format(" "*(T.menu_width-(len("Experience:")+len(exp))), exp), "\n", self.c_text1)
-        T.print("\nHealth:{}{}".format(" "*(T.menu_width-(len("Health:")+len(ehp))), ehp), "\n", self.c_text1)
-        T.print("Mana:{}{}".format(" "*(T.menu_width-(len("Mana:")+len(emp))), emp), "\n", self.c_text1)
-        T.print("Magic:{}{}".format(" "*(T.menu_width-(len("Magic:")+len(emg))), emg), "\n", self.c_text1)
-        T.print("Attack:{}{}".format(" "*(T.menu_width-(len("Attack:")+len(eat))), eat), "\n", self.c_text1)
-        T.print("Defense:{}{}".format(" "*(T.menu_width-(len("Defense:")+len(edf))), edf), "\n", self.c_text1)
-        T.print("\nStrength:{}{}".format(" "*(T.menu_width-(len("Strength:")+len(str(entity.strength)))), entity.strength), "\n", self.c_text1)
-        T.print("Constitution:{}{}".format(" "*(T.menu_width-(len("Constitution:")+len(str(entity.constitution)))), entity.constitution), "\n", self.c_text1)
-        T.print("Dexterity:{}{}".format(" "*(T.menu_width-(len("dexterity:")+len(str(entity.dexterity)))), entity.dexterity), "\n", self.c_text1)
-        T.print("Awareness:{}{}".format(" "*(T.menu_width-(len("Awareness:")+len(str(entity.awareness)))), entity.awareness), "\n", self.c_text1)
-        T.print("Intelligence:{}{}".format(" "*(T.menu_width-(len("Intelligence:")+len(str(entity.intelligence)))), entity.intelligence), "\n", self.c_text1)
-        T.print("Charisma:{}{}".format(" "*(T.menu_width-(len("Charisma:")+len(str(entity.charisma)))), entity.charisma), "\n", self.c_text1)
+        self.display_text(V.location, "Location")
+        self.display_text(entity.name, "Name")
+        self.display_text(entity.race, "Race")
+        self.display_text(entity.sex, "Sex")
+        self.display_text(entity.job, "Job")
+        print()
+        self.display_text(str(entity.gold), "Gold")
+        self.display_text(str(entity.level), "Level")
+        self.display_text(str(entity.points), "Points")
+        self.display_text(str(entity.skill_points), "Skill Points")
+        self.display_text(exp, "Experience")
+        print()
+        self.display_text(ehp, "Health")
+        self.display_text(emp, "Mana")
+        self.display_text(emg, "Magic")
+        self.display_text(eat, "Attack")
+        self.display_text(edf, "Defense")
+        print()
+        self.display_text(str(entity.strength), "Strength")
+        self.display_text(str(entity.constitution), "Constitution")
+        self.display_text(str(entity.dexterity), "Dexterity")
+        self.display_text(str(entity.awareness), "Awareness")
+        self.display_text(str(entity.intelligence), "Intelligence")
+        self.display_text(str(entity.charisma), "Charisma")
 
     def display_skills(self, entity):
         T.print()
@@ -274,12 +277,12 @@ class Var():
                 T.print()
             count += 1
         T.print()
-    
+
     def display_spells(self, entity):
         T.print()
         for s in entity.spells:
             T.print("{}{}{}".format(s," "*(T.menu_width-(len(s)+len(str(entity.spells[s])))), entity.spells[s]), "\n", self.c_text1)
-    
+
     def display_jobs(self, entity):
         T.print()
         for j in entity.jobs:

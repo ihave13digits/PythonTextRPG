@@ -1,5 +1,6 @@
 from var import *
 from output import *
+from game_data import *
 
 def freetype(data):
     if data['object'] == 'player':
@@ -49,12 +50,12 @@ def quest_menu():
         return
     if 'freetype' in quest[V.selected_quest][part]:
         freetype(quest[V.selected_quest][part]['freetype'])
-    
+
     if 'prompt' in quest[V.selected_quest][part]:
         T.text(quest[V.selected_quest][part]['prompt'])
     elif 'fprompt' in quest[V.selected_quest][part]:
         T.text(quest[V.selected_quest][part]['fprompt'].format(**V.quest_hash))
-    
+
     if 'option' in quest[V.selected_quest][part]:
         for o in quest[V.selected_quest][part]['option']:
             T.print("({}) {}".format(o, quest[V.selected_quest][part]['option'][o]['prompt']), "\n", V.c_text1)
@@ -98,6 +99,7 @@ def quest_menu():
         V.state = "main_menu"
 
 def quest_history():
+    global quest
     T.clear_text()
     T.print("{}\n".format(V.selected_quest), "\n", V.c_text1)
     for q in quest:
@@ -105,13 +107,15 @@ def quest_history():
         if quest[q]['discovered']:
             qst = q
             cplt = "Incomplete"
-            if quest[q]['completed']:
-                cplt = "Completed"
+            if quest[q]['completed'] == True:
+                cplt = " Completed"
             T.print("{}{}{}| {}".format(qst, " "*(T.menu_width-(len(qst)+len(quest[q]['location'])+len(cplt)+2)), quest[q]['location'], cplt), "\n", V.c_text2)
     T.print()
     psbl = ""
-    if quest[V.selected_quest]['location'] == V.location and quest[V.selected_quest]['discovered'] == True and not quest[V.selected_quest]['completed']:
-        psbl = "(1) Accept Quest\n"
+    if quest[V.selected_quest]['location'] == V.location:
+        if quest[V.selected_quest]['discovered'] == True:
+            if quest[V.selected_quest]['completed'] == False:
+                psbl = "(1) Accept Quest\n"
     T.print("{}(0) Back\n".format(psbl), "\n", V.c_text2)
     sel = T.input(": ")
     if sel == "0":

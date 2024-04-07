@@ -1,5 +1,5 @@
 {"location": "Gnarled Pass", "discovered": false, "completed": false, "part": "0",
-"unlock": {"location":"Gnarled Pass","quest":["Intro"]},
+"unlock": {"location":"Gnarled Pass","quest":["DwarvenDungeon"]},
 "0": {"part": "1", "prompt": "Dwarf: "},
 "1": {"completed": true, "state": "main_menu"}
 }

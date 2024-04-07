@@ -46,7 +46,7 @@ class Engine():
                     quest[q] = q_data
             except FileNotFoundError:
                 T.text("Quest File at path '{}' Not Found".format(data_path))
-            
+
 
     def save_data(self):
         import json
@@ -185,6 +185,7 @@ class Engine():
         T.clear_text()
 
     def new_game(self):
+        self.load_quest_data()
         for l in world:
             S = Shop(world[l]['shop']['gold'], world[l]['shop']['markup'])
             world[l]['shop'] = S.get_data()
@@ -193,7 +194,7 @@ class Engine():
         V.selected_quest = "Intro"
 
     def show_data_slots(self):
-        for i in range (1,9):
+        for i in range (1,10):
             txt = "Empty"
             try:
                 V.data_slot = i
@@ -226,6 +227,7 @@ class Engine():
             V.data_slot = int(sel)
             self.save_data()
             V.running = False
+            T.clear_text()
 
     def intro(self):
         can_continue = False
@@ -250,6 +252,16 @@ class Engine():
         elif sel == "2" and can_continue: V.state = "load_game"
 
     def startup(self):
+        can_continue = False
+        try:
+            with open(self.get_data_path(), "r") as f:
+                f.close()
+            can_continue = True
+        except:
+            pass
+        if can_continue:
+            V.state = "intro"
+            return
         T.clear_text()
         try: T.print(startup_anim[V.frame_count])
         except: pass
@@ -284,6 +296,7 @@ class Engine():
                         can_unlock = False
                 if can_unlock:
                     quest[q]['discovered'] = True
+        input(quest)
 
     def update(self):
         self.update_background()

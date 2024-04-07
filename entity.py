@@ -22,7 +22,7 @@ class Entity():
         self.confused = False
         self.stunned = False
         self.burned = False
-        
+
         self.hp = mobs[RACE]['hp']
         self.HP = mobs[RACE]['hp']
         self.mp = mobs[RACE]['mp']
@@ -100,7 +100,7 @@ class Entity():
         self.spells = {}
         self.inventory = {}
         self.proficiency = {}
-        
+
         self.calculate_derived()
         self.hp = self.HP
         self.mp = self.MP
@@ -217,10 +217,14 @@ class Entity():
         d = min(duration, 8)/8
         self.hp = int(self.hp + (self.HP-self.hp) * d)
         self.mp = int(self.mp + (self.MP-self.mp) * d)
-        self.poisoned = False
-        self.confused = False
-        self.stunned = False
-        self.burned = False
+        if d > 0.00:
+            self.confused = False
+        if d > 0.25:
+            self.stunned = False
+        if d > 0.50:
+            self.poisoned = False
+        if d > 0.75:
+            self.burned = False
 
     def take_stat_damage(self):
         if self.burned:
@@ -376,7 +380,7 @@ class Entity():
         self.magic = int(mobs[self.race]['mag']*(((self.awareness*0.11)+(self.intelligence*0.22)+(self.dexterity*0.11))*0.25))
         self.attack = int(mobs[self.race]['atk']*(((self.strength*0.22)+(self.constitution*0.11)+(self.dexterity*0.11))*0.25))
         self.defense = int(mobs[self.race]['def']*(((self.strength*0.11)+(self.constitution*0.11)+(self.dexterity*0.22))*0.25))
-        
+
         self.skills['barter'] = int(self.charisma*1.5)
         self.skills['bluff'] = int(self.charisma*0.5)+(self.constitution*0.5)
         self.skills['build'] = int(self.dexterity*0.5)+(self.constitution*0.25)+(self.strength*0.25)
@@ -419,7 +423,7 @@ class Entity():
         if self.is_ai:
             self.auto_level()
         self.calculate_derived()
-    
+
     def auto_level(self):
         skills = []
         for s in self.skills:
