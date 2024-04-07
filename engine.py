@@ -170,6 +170,33 @@ class Engine():
             else:
                 T.text(T.get_colored_text("{} failed to forage supplies.".format(V.player.name), V.c_text1))
 
+    def quest_history(self):
+        global quest
+        T.clear_text()
+        T.print("{}\n".format(V.selected_quest), "\n", V.c_text1)
+        for q in quest:
+            qst = ""
+            if quest[q]['discovered']:
+                qst = q
+                cplt = "Incomplete"
+                if quest[q]['completed'] == True:
+                    cplt = " Completed"
+                T.print("{}{}{}| {}".format(qst, " "*(T.menu_width-(len(qst)+len(quest[q]['location'])+len(cplt)+2)), quest[q]['location'], cplt), "\n", V.c_text2)
+        T.print()
+        psbl = ""
+        if quest[V.selected_quest]['location'] == V.location:
+            if quest[V.selected_quest]['discovered'] == True:
+                if quest[V.selected_quest]['completed'] == False:
+                    psbl = "(1) Accept Quest\n"
+        T.print("{}(0) Back\n".format(psbl), "\n", V.c_text2)
+        sel = T.input(": ")
+        if sel == "0":
+            V.state = "main_menu"
+        if sel == "1" and psbl != "":
+            V.state = "quest"
+        if sel in quest:
+            V.selected_quest = sel
+
     def exit_menu(self):
         T.text(T.get_colored_text("Are you sure you want to exit?", V.c_text1))
         T.clear_text()
@@ -305,7 +332,7 @@ class Engine():
         elif V.state == "prepare_battle": prepare_battle()
         #
         elif V.state == "quest": quest_menu()
-        elif V.state == "quest_history": quest_history()
+        elif V.state == "quest_history": self.quest_history()
         #
         elif V.state == "travel_menu": travel_menu()
         #

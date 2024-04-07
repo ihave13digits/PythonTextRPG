@@ -97,30 +97,3 @@ def quest_menu():
         quest[V.selected_quest]['part'] = quest[V.selected_quest][part]['part']
     elif 'part' in quest[V.selected_quest][part] and not passed:
         V.state = "main_menu"
-
-def quest_history():
-    global quest
-    T.clear_text()
-    T.print("{}\n".format(V.selected_quest), "\n", V.c_text1)
-    for q in quest:
-        qst = ""
-        if quest[q]['discovered']:
-            qst = q
-            cplt = "Incomplete"
-            if quest[q]['completed'] == True:
-                cplt = " Completed"
-            T.print("{}{}{}| {}".format(qst, " "*(T.menu_width-(len(qst)+len(quest[q]['location'])+len(cplt)+2)), quest[q]['location'], cplt), "\n", V.c_text2)
-    T.print()
-    psbl = ""
-    if quest[V.selected_quest]['location'] == V.location:
-        if quest[V.selected_quest]['discovered'] == True:
-            if quest[V.selected_quest]['completed'] == False:
-                psbl = "(1) Accept Quest\n"
-    T.print("{}(0) Back\n".format(psbl), "\n", V.c_text2)
-    sel = T.input(": ")
-    if sel == "0":
-        V.state = "main_menu"
-    if sel == "1" and psbl != "":
-        V.state = "quest"
-    if sel in quest:
-        V.selected_quest = sel
