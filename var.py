@@ -150,6 +150,7 @@ class Var():
         return selection
 
     def roll_skill(self, entity, skill, rate=100):
+        T.print()
         input("Chance of {}: {}/{}".format(skill, entity.get_skill(skill), rate))
         return bool(random.randint(0, rate) < entity.get_skill(skill))
 
@@ -269,13 +270,14 @@ class Var():
 
     def display_skills(self, entity):
         T.print()
-        count = 1
+        count = 0
+        limit = int(T.menu_width/12)
         for s in entity.skills:
+            count += 1
             skl = "{}{}".format(T.expand_text("| {}".format(s), 12, ' ', 'l'), T.expand_text(entity.get_skill(s), 4, ' ', 'r'))
             T.print(skl, "", V.c_text1)
-            if count % int(T.menu_width/16) == 0:
+            if count % limit == 0:
                 T.print()
-            count += 1
         T.print()
 
     def display_spells(self, entity):
