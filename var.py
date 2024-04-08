@@ -151,7 +151,7 @@ class Var():
 
     def roll_skill(self, entity, skill, rate=100):
         T.print()
-        input("Chance of {}: {}/{}".format(skill, entity.get_skill(skill), rate))
+        input("Skill ({}) success: {}/{}".format(skill, entity.get_skill(skill), rate))
         return bool(random.randint(0, rate) < entity.get_skill(skill))
 
     ##

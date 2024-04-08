@@ -124,7 +124,7 @@ def battle_ai():
         if random.randint(0, 100) < 10:
             affiction = "confusion"
             can_perform_action = False
-  
+
     # Items
     if V.mob.hp < V.mob.HP/2 and V.mob.mp < V.mob.MP/2:
         try:
@@ -153,7 +153,7 @@ def battle_ai():
                         aid_id = i
                         can_perform_action = False
         except: can_perform_action = True
-    
+
     # Magic
     if len(V.mob.spells) > 0:
         if can_cast:
@@ -166,7 +166,7 @@ def battle_ai():
                     aid_id = s
         if aid_id != "nothing":
             action = "magic"
-  
+
     # Action
     if can_perform_action:
         if action == "item":
@@ -193,84 +193,6 @@ def battle_ai():
     T.text(output_text)
     V.ai_turn = False
 
-
-
-def battle_ai1():
-    affliction = ""
-    can_perform_action = True
-    if V.mob.stunned:
-        if random.randint(0, 100) < 10:
-            affiction = "being stunned"
-            can_perform_action = False
-            V.ai_turn = False
-    if V.mob.confused:
-        if random.randint(0, 100) < 10:
-            affiction = "confusion"
-            can_perform_action = False
-            V.ai_turn = False
-    
-    if can_perform_action:
-        if V.mob.hp < V.mob.HP/2:
-            try:
-                for i in V.mob.inventory:
-                    if 'hp' in items[i] and not 'mp' in items[i]:
-                        if V.mob.hp+items[i]['hp'] <= V.mob.HP:
-                            V.mob.use_item(i)
-                            T.text("{} used {}".format(V.mob.name, i))
-            except: V.ai_turn = False
-        elif V.mob.mp < V.mob.MP/2:
-            try:
-                for i in V.mob.inventory:
-                    if 'mp' in items[i] and not 'hp' in items[i]:
-                        if V.mob.mp+items[i]['mp'] <= V.mob.MP:
-                            V.mob.use_item(i)
-                            T.text("{} used {}".format(V.mob.name, i))
-            except: V.ai_turn = False
-        elif V.mob.hp < V.mob.HP/2 and V.mob.mp < V.mob.MP/2:
-            try:
-                for i in V.mob.inventory:
-                    if 'hp' in items[i] and 'mp' in items[i]:
-                        if V.mob.hp+items[i]['hp'] <= V.mob.HP or V.mob.mp+items[i]['mp'] <= V.mob.MP:
-                            V.mob.use_item(i)
-                            T.text("{} used {}".format(V.mob.name, i))
-            except: V.ai_turn = False
-        can_cast = bool(random.randint(0, V.mob.MP) <= V.mob.mp)
-        if len(V.mob.spells) > 0:
-            if can_cast:
-                spell = "nothing"
-                entity = V.mob
-                for s in V.mob.spells:
-                    if magic[s]['cost'] <= V.mob.mp:
-                        can_cast = True
-                        if 'damage' in magic[s]:
-                            entity = V.player
-                        if 'hp' in magic[s]:
-                            entity = V.mob
-                        spell = s
-                if can_cast and spell != "nothing":
-                    if V.roll_skill(V.mob, 'cast'):
-                        V.mob.use_spell(spell, entity)
-                        T.text("{} casted {} on {}".format(V.mob.name, spell, entity.name))
-                    else:
-                        T.text("{} miscasted {} on {}".format(V.mob.name, spell, entity.name))
-                    V.mob.take_stat_damage()
-        if not can_cast:
-            hand = "right hand"
-            if V.mob.equip['left hand'] != "nothing": hand = "left hand"
-            elif V.mob.equip['right hand'] != "nothing": hand = "right hand"
-            if V.roll_skill(V.mob, 'combat'):
-                dmg = V.mob.get_damage(hand)
-                V.player.take_damage(dmg)
-                T.text("{} attacked {} for {} damage".format(V.mob.name, V.player.name, max(1, dmg-V.player.get_armor())))
-            else:
-                T.text("{} missed".format(V.mob.name))
-            V.mob.take_stat_damage()
-    elif not can_perform_action:
-        T.text("{} couldn't attack due to {}".format(V.mob.name, affliction))
-        V.mob.take_stat_damage()
-    V.ai_turn = False
-
-    
 def battle_player():
     T.print("(1) Attack\n(2) Stats\n(3) Magic\n(4) Item\n(0) Run", "\n", V.c_text2)
     sel = T.input(": ")
@@ -300,9 +222,16 @@ def battle():
     if V.ai_turn: battle_ai()
     else: battle_player()
 
+def determine_first():
+    skill_diff = (V.mob.skills["combat"]+V.mob.skills["dodge"]) - (V.player.skills["combat"]+V.player.skills["dodge"])
+    if skill_diff == 0:
+        return random.choice([True, False])
+    else:
+        return skill_diff < 0
+
 def prepare_battle():
-    V.ai_turn = random.choice([True, False])
     V.randomize_mob()
+    V.ai_turn = determine_first()
     txt = ""
     if V.ai_turn: txt = "{} is engaging {}".format(V.mob.race.capitalize(), V.player.name)
     else: txt = "{} is engaging {}".format(V.player.name, V.mob.race)

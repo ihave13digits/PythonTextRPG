@@ -19,6 +19,7 @@ phrases = {
            "Have a look at my inventory.",
            "Take a gander at my selection.",
            "Let me show you what I have in store.",
+           "Let me show you what I have in stock.",
            ],
        "shop_sell" : [
            "Let's see what you have.",
@@ -29,6 +30,7 @@ phrases = {
            "Let me take a look at your inventory.",
            "What goods do you have for sale?",
            "Let me see what you have.",
+           "Let me see what you've got.",
            ],
 }
 startup_anim = [

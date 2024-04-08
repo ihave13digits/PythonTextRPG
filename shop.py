@@ -43,6 +43,14 @@ class Shop():
             else:
                 self.inventory.pop(item, None)
 
+    def trade(self, shop):
+        for i in items:
+            if i != "nothing":
+                if i in shop.inventory:
+                    diff = self.inventory[i] - shop.inventory[i]
+                    if diff < 0:
+                        pass
+
     def restock(self):
         for i in items:
             if i != "nothing":
