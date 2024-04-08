@@ -214,7 +214,7 @@ def battle():
     T.print("{}{}{}".format(p_mana," "*(T.menu_width-(len(p_mana)+len(m_mana))),m_mana), "\n", V.c_text1)
     print()
     if V.player.hp <= 0:
-        V.battle_lose()
+        battle_lose()
         return
     if V.mob.hp <= 0:
         battle_win()
