@@ -105,6 +105,11 @@
 
 "raw meat"                  : {"type" : "material", "value" : 5, "rarity" : 10, "count" : 1},
 "raw fish"                  : {"type" : "material", "value" : 5, "rarity" : 20, "count" : 1},
+"carrot"                    : {"type" : "material", "value" : 5, "rarity" : 25, "count" : 1},
+"potato"                    : {"type" : "material", "value" : 5, "rarity" : 25, "count" : 1},
+"onion"                     : {"type" : "material", "value" : 5, "rarity" : 25, "count" : 1},
+"wheat"                     : {"type" : "material", "value" : 5, "rarity" : 25, "count" : 1},
+"oats"                      : {"type" : "material", "value" : 5, "rarity" : 25, "count" : 1},
 "flax"                      : {"type" : "material", "value" : 5, "rarity" : 10, "count" : 1},
 "hemp"                      : {"type" : "material", "value" : 5, "rarity" : 5, "count" : 1},
 
