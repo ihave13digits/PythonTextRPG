@@ -55,8 +55,11 @@ def battle_magic():
         return
     elif sel in V.player.spells:
         if V.roll_skill(V.player, 'cast'):
-            V.player.use_spell(sel, entity)
-            T.text("{} used {} on {}".format(V.player.name, sel, entity.name))
+            val = V.player.use_spell(sel, entity)-V.mob.get_armor()
+            if val>0:
+                T.text("{} used {} on {} for {} points".format(V.player.name, sel, entity.name, val))
+            else:
+                T.text("{} used {} on {}".format(V.player.name, sel, entity.name))
         else:
             T.text("{} miscasted {} on {}".format(V.player.name, sel, entity.name))
         V.player.take_stat_damage()
@@ -66,8 +69,11 @@ def battle_magic():
 def battle_item():
     sel = V.inventory_selection(V.player.inventory, "battle")
     if sel != "nothing":
-        V.player.use_item(sel)
-        T.text("{} used {}".format(V.player.name, sel))
+        val = V.player.use_item(sel)
+        if val > 0:
+            T.text("{} used {} for {} points".format(V.player.name, sel, val))
+        else:
+            T.text("{} used {}".format(V.player.name, sel))
         V.state = "battle"
 
 def battle_win():

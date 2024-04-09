@@ -246,14 +246,24 @@ class Entity():
         else: self.spells[spell] = 1
 
     def use_spell(self, spell, entity):
+        value = 0
         if self.mp >= magic[spell]['cost']:
-            if "hp" in magic[spell]: entity.hp = min(entity.hp+(int(magic[spell]["hp"]*(self.spells[spell]*0.2))+self.get_magic_bonus()), entity.HP)
-            if "damage" in magic[spell]: entity.take_damage(int(self.get_magic_damage(spell)*(self.spells[spell])))
-            if "poisoned" in magic[spell]: entity.poisoned = magic[spell]['poisoned']
-            if "confused" in magic[spell]: entity.confused = magic[spell]['confused']
-            if "stunned" in magic[spell]: entity.stunned = magic[spell]['stunned']
-            if "burned" in magic[spell]: entity.burned = magic[spell]['burned']
+            if "hp" in magic[spell]:
+                value = (int(magic[spell]["hp"]*(self.spells[spell]*0.2))+self.get_magic_bonus())
+                entity.hp = min(entity.hp+value, entity.HP)
+            if "damage" in magic[spell]:
+                value = int(self.get_magic_damage(spell)*(self.spells[spell]))
+                entity.take_damage(value)
+            if "poisoned" in magic[spell]:
+                entity.poisoned = magic[spell]['poisoned']
+            if "confused" in magic[spell]:
+                entity.confused = magic[spell]['confused']
+            if "stunned" in magic[spell]:
+                entity.stunned = magic[spell]['stunned']
+            if "burned" in magic[spell]:
+                entity.burned = magic[spell]['burned']
             self.mp -= magic[spell]['cost']
+        return value
 
     def add_item(self, item):
         if item in self.inventory: self.inventory[item] += 1
@@ -273,35 +283,34 @@ class Entity():
         self.equip[slot] = item
 
     def use_item(self, item):
-        can_delete = False
+        value = 0
+        can_delete = True
         if "hp" in items[item]:
-            can_delete = True
+            value = min(self.hp+items[item]['hp'], self.HP)-self.hp
             self.hp = min(self.hp+items[item]['hp'], self.HP)
         if "mp" in items[item]:
-            can_delete = True
+            value = min(self.mp+items[item]['mp'], self.MP)-self.mp
             self.mp = min(self.mp+items[item]['mp'], self.MP)
         if "HP" in items[item]:
-            can_delete = True
-            self.HP += items[item]['HP']
+            value = items[item]['HP']
+            self.HP += value
         if "MP" in items[item]:
-            can_delete = True
-            self.MP += items[item]['MP']
+            value = items[item]['MP']
+            self.MP += value
         if "mag" in items[item]:
-            can_delete = True
-            self.magic += items[item]['mag']
+            value = items[item]['mag']
+            self.magic += value
         if "atk" in items[item]:
-            can_delete = True
-            self.attack += items[item]['atk']
+            value = items[item]['atk']
+            self.attack += value
         if "def" in items[item]:
-            can_delete = True
-            self.defense += items[item]['def']
+            value = items[item]['def']
+            self.defense += value
         if "spell" in items[item]:
-            can_delete = True
             self.add_spell(items[item]['spell'])
-        #if "" in items[item]:
-        #    pass
         if can_delete:
             self.del_item(item)
+        return value
 
     def can_craft_item(self, item):
         can_craft = True
