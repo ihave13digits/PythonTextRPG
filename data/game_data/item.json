@@ -9,6 +9,12 @@
 "gold ore"                : {"type" : "material", "value" : 125, "rarity" : 10, "count" : 1},
 "mythril ore"             : {"type" : "material", "value" : 500, "rarity" : 5, "count" : 1},
 
+"iron nugget"               : {"type" : "material", "value" : 25, "rarity" : 30, "count" : 1},
+"copper nugget"             : {"type" : "material", "value" : 25, "rarity" : 25, "count" : 1},
+"silver nugget"             : {"type" : "material", "value" : 250, "rarity" : 15, "count" : 1},
+"gold nugget"               : {"type" : "material", "value" : 1250, "rarity" : 10, "count" : 1},
+"mythril nugget"            : {"type" : "material", "value" : 5000, "rarity" : 5, "count" : 1},
+
 "iron ingot"                : {"type" : "material", "value" : 25, "rarity" : 30, "count" : 1},
 "steel ingot"               : {"type" : "material", "value" : 125, "rarity" : 15, "count" : 1},
 "copper ingot"              : {"type" : "material", "value" : 25, "rarity" : 25, "count" : 1},

@@ -170,21 +170,28 @@ class Engine():
                 T.text(T.get_colored_text("{} failed to forage supplies.".format(V.player.name), V.c_text1))
 
     def freetype(self, data):
+        typed_data = ""
+        while True:
+            typed_data = T.input(": ")
+            length = len(typed_data)
+            if length>0 and length<=16:
+                break
         if data['object'] == 'player':
             if data['variable'] == "name":
-                V.player.name = T.input(": ")
+                V.player.name = typed_data
                 V.quest_hash['player_name'] = V.player.name
 
     def quest_menu(self):
         global quest
-        passed = True
+        frt_passed = True
+        req_passed = True
         part = quest[V.selected_quest]['part']
         if 'require' in quest[V.selected_quest][part]:
             if 'stat' in quest[V.selected_quest][part]['require']:
                 stat = quest[V.selected_quest][part]['require']['stat']
                 value = quest[V.selected_quest][part]['require']['value']
                 if not V.player.require('stat', stat, value):
-                    passed = False
+                    req_passed = False
             elif 'skill' in quest[V.selected_quest][part]['option'][sel]['reward']:
                 stat = quest[V.selected_quest][part]['option'][sel]['reward']['skill']
                 value = quest[V.selected_quest][part]['option'][sel]['reward']['value']
@@ -193,7 +200,7 @@ class Engine():
                 stat = quest[V.selected_quest][part]['require']['item']
                 value = quest[V.selected_quest][part]['require']['value']
                 if not V.player.require('item', stat, value):
-                    passed = False
+                    req_passed = False
         if 'reward' in quest[V.selected_quest][part]:
             if 'stat' in quest[V.selected_quest][part]['reward']:
                 key = quest[V.selected_quest][part]['reward']['stat']
@@ -233,7 +240,7 @@ class Engine():
                         stat = quest[V.selected_quest][part]['option'][sel]['require']['stat']
                         value = quest[V.selected_quest][part]['option'][sel]['require']['value']
                         if not V.player.require('stat', stat, value):
-                            passed = False
+                            req_passed = False
                     elif 'skill' in quest[V.selected_quest][part]['option'][sel]['reward']:
                         stat = quest[V.selected_quest][part]['option'][sel]['reward']['skill']
                         value = quest[V.selected_quest][part]['option'][sel]['reward']['value']
@@ -242,7 +249,7 @@ class Engine():
                         stat = quest[V.selected_quest][part]['option'][sel]['require']['item']
                         value = quest[V.selected_quest][part]['option'][sel]['require']['value']
                         if not V.player.require('item', stat, value):
-                            passed = False
+                            req_passed = False
                 if 'reward' in quest[V.selected_quest][part]['option'][sel]:
                     if 'stat' in quest[V.selected_quest][part]['option'][sel]['reward']:
                         stat = quest[V.selected_quest][part]['option'][sel]['reward']['stat']
@@ -256,13 +263,13 @@ class Engine():
                         stat = quest[V.selected_quest][part]['option'][sel]['reward']['item']
                         value = quest[V.selected_quest][part]['option'][sel]['reward']['value']
                         V.player.reward('item', stat, value)
-                if 'part' in quest[V.selected_quest][part]['option'][sel] and passed:
+                if 'part' in quest[V.selected_quest][part]['option'][sel] and req_passed:
                     quest[V.selected_quest]['part'] = quest[V.selected_quest][part]['option'][sel]['part']
-                elif 'part' in quest[V.selected_quest][part]['option'][sel] and not passed:
+                elif 'part' in quest[V.selected_quest][part]['option'][sel] and not req_passed:
                     V.state = "main_menu"
-        if 'part' in quest[V.selected_quest][part] and passed:
+        if 'part' in quest[V.selected_quest][part] and req_passed:
             quest[V.selected_quest]['part'] = quest[V.selected_quest][part]['part']
-        elif 'part' in quest[V.selected_quest][part] and not passed:
+        elif 'part' in quest[V.selected_quest][part] and not req_passed:
             V.state = "main_menu"
 
     def quest_history(self):

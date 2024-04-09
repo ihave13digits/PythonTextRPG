@@ -12,7 +12,7 @@ def show_recipe(r):
     T.print(r, "\n\n", V.c_text1)
     T.print("Requires:", "\n", V.c_text1)
     for i in crafting[r]['take']:
-        T.print("  {} {}".format(i, crafting[r]['take'][i]), "\n", V.c_text1)
+        T.print("  {} {}/{}".format(i, crafting[r]['take'][i], V.player.inventory[i]), "\n", V.c_text1)
     T.print("Produces:", "\n", V.c_text1)
     for i in crafting[r]['give']:
         T.print("  {} {}".format(i, crafting[r]['give'][i]), "\n", V.c_text1)
@@ -20,7 +20,8 @@ def show_recipe(r):
     sel = T.input(": ")
     if sel == "0": return
     if sel == '1': V.player.craft_item(r)
-    show_recipe(r)
+    if V.player.can_craft_item(r):
+        show_recipe(r)
 
 def craft_item():
     craftable = []

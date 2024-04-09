@@ -3,17 +3,38 @@ from output import *
 
 def set_speed():
     T.clear_text()
-    T.print("(1) Fast\n(2) Normal\n(3) Slow\n(0) Back", "\n", V.c_text2)
+    T.print("(1) Fastest\n(2) Fast\n(3) Normal\n(4) Slow\n(5) Slowest\n(6) Custom\n(0) Back", "\n", V.c_text2)
     sel = T.input(": ")
     if sel == "0": V.state = "settings"
     elif sel == "1":
-        T.text_speed = 0.01
+        T.text_speed = 0.010
         T.text("Sample text to show timing")
     elif sel == "2":
-        T.text_speed = 0.03
+        T.text_speed = 0.020
         T.text("Sample text to show timing")
     elif sel == "3":
-        T.text_speed = 0.06
+        T.text_speed = 0.030
+        T.text("Sample text to show timing")
+    elif sel == "4":
+        T.text_speed = 0.045
+        T.text("Sample text to show timing")
+    elif sel == "5":
+        T.text_speed = 0.060
+        T.text("Sample text to show timing")
+    elif sel == "6":
+        custom_speed = ""
+        while True:
+            custom_speed = T.input(": ")
+            try:
+                _test = float(custom_speed)
+                if _test < 1.0:
+                    T.text_speed = _test
+                else:
+                    T.print("Invalid Input.  Enter Decimal Value Greater Than 0.0 And Less Than 1.0.")
+                break
+            except:
+                T.print("Invalid Input.  Enter Decimal Value Greater Than 0.0 And Less Than 1.0.")
+        T.text_speed = float(custom_speed)
         T.text("Sample text to show timing")
 
 def set_pause():
@@ -74,19 +95,22 @@ def set_color():
     T.print("(6) Magic", "\n", V.c_magic)
     T.print("(7) Gold", "\n", V.c_gold)
     T.print("(0) Back", "\n", V.c_text2)
-    
+
     sel = T.input(": ")
     if sel == "0": V.state = "settings"
     if sel == "r":
         T.clear_text()
+        T.print("Input range (0-255)", "\n", V.c_text1)
         v = T.input(": ")
         V.c_edit.r = int(v)
     if sel == "g":
         T.clear_text()
+        T.print("Input range (0-255)", "\n", V.c_text1)
         v = T.input(": ")
         V.c_edit.g = int(v)
     if sel == "b":
         T.clear_text()
+        T.print("Input range (0-255)", "\n", V.c_text1)
         v = T.input(": ")
         V.c_edit.b = int(v)
     if sel == "1": V.c_text1.reset(V.c_edit)

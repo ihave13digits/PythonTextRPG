@@ -305,13 +305,14 @@ class Entity():
 
     def can_craft_item(self, item):
         can_craft = True
+        if self.skills['craft'] < crafting[item]['craft']:
+            return False
         for i in crafting[item]['take']:
             if i in self.inventory:
                 if self.inventory[i] < crafting[item]['take'][i]:
-                    if self.skills['craft'] < crafting[item]['craft']:
-                        can_craft = False
+                    return False
             else:
-                can_craft = False
+                return False
         return can_craft
 
     def craft_item(self, item):
