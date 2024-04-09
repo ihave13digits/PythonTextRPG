@@ -130,7 +130,7 @@
 "mana potion"               : {"type" : "potion", "mp" : 25, "value" : 250, "rarity" : 100, "count" : 5},
 "major mana potion"         : {"type" : "potion", "mp" : 50, "value" : 100, "rarity" : 50, "count" : 2},
 "elixer"                    : {"type" : "potion", "hp" : 25, "mp" : 25, "value" : 250, "rarity" : 100, "count" : 5},
-"restoration potion"        : {"type" : "potion", "hp" : 10000000, "mp" : 10000000, "value" : 1000, "rarity" : 50, "count" : 2},
+"restoration potion"        : {"type" : "potion", "hp" : 10000000, "mp" : 10000000, "burned":false, "stunned":false, "confused":false, "poisoned":false, "value" : 1000, "rarity" : 50, "count" : 2},
 "potion of blessings"       : {"type" : "potion", "mag" : 1, "atk" : 1, "def" : 1, "value" : 50000, "rarity" : 1, "count" : 2},
 "potion of magic"           : {"type" : "potion", "mag" : 1, "value" : 25000, "rarity" : 2, "count" : 2},
 "potion of attack"          : {"type" : "potion", "atk" : 1, "value" : 25000, "rarity" : 2, "count" : 2},

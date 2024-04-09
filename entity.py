@@ -306,6 +306,18 @@ class Entity():
         if "def" in items[item]:
             value = items[item]['def']
             self.defense += value
+        if "poisoned" in items[item]:
+            value = items[item]['poisoned']
+            self.poisoned = value
+        if "confused" in items[item]:
+            value = items[item]['confused']
+            self.confused = value
+        if "stunned" in items[item]:
+            value = items[item]['stunned']
+            self.stunned = value
+        if "burned" in items[item]:
+            value = items[item]['burned']
+            self.burned = value
         if "spell" in items[item]:
             self.add_spell(items[item]['spell'])
         if can_delete:
@@ -392,20 +404,20 @@ class Entity():
         self.defense = int(mobs[self.race]['def']*(((self.strength*0.11)+(self.constitution*0.11)+(self.dexterity*0.22))*0.25))
 
         self.skills['barter'] = int(self.charisma*1.5)
-        self.skills['bluff'] = int(self.charisma*0.5)+(self.constitution*0.5)
-        self.skills['build'] = int(self.dexterity*0.5)+(self.constitution*0.25)+(self.strength*0.25)
-        self.skills['cast'] = int(self.magic*0.5)+(self.dexterity*0.25)+(self.intelligence*0.25)
-        self.skills['climb'] = int(self.awareness*0.2)+(self.strength*0.4)+(self.dexterity*0.4)
-        self.skills['combat'] = int(self.awareness*0.25)+(self.attack*0.25)+(self.defense*0.25)+(self.dexterity*0.25)
-        self.skills['craft'] = int(self.dexterity*0.5)+(self.intelligence*0.5)
-        self.skills['dodge'] = int(self.awareness*0.5)+(self.dexterity*0.5)
-        self.skills['forage'] = int(self.awareness*0.5)+(self.dexterity*0.5)
-        self.skills['heal'] = int(self.awareness*0.5)+(self.dexterity*0.5)
-        self.skills['hide'] = int(self.awareness*0.5)+(self.intelligence*0.5)
-        self.skills['hunt'] = int(self.awareness*0.5)+(self.dexterity*0.5)
-        self.skills['persuade'] = int(self.awareness*0.5)+(self.charisma*0.5)
-        self.skills['search'] = int(self.awareness*0.5)+(self.intelligence*0.5)
-        self.skills['sneak'] = int(self.awareness*0.5)+(self.dexterity*0.5)
+        self.skills['bluff'] = int((self.charisma*0.5)+(self.constitution*0.5))
+        self.skills['build'] = int((self.dexterity*0.5)+(self.constitution*0.25)+(self.strength*0.25))
+        self.skills['cast'] = int((self.magic*0.5)+(self.dexterity*0.25)+(self.intelligence*0.25))
+        self.skills['climb'] = int((self.awareness*0.2)+(self.strength*0.4)+(self.dexterity*0.4))
+        self.skills['combat'] = int((self.awareness*0.25)+(self.attack*0.25)+(self.defense*0.25)+(self.dexterity*0.25))
+        self.skills['craft'] = int((self.dexterity*0.5)+(self.intelligence*0.5))
+        self.skills['dodge'] = int((self.awareness*0.5)+(self.dexterity*0.5))
+        self.skills['forage'] = int((self.awareness*0.5)+(self.dexterity*0.5))
+        self.skills['heal'] = int((self.awareness*0.5)+(self.dexterity*0.5))
+        self.skills['hide'] = int((self.awareness*0.5)+(self.intelligence*0.5))
+        self.skills['hunt'] = int((self.awareness*0.5)+(self.dexterity*0.5))
+        self.skills['persuade'] = int((self.awareness*0.5)+(self.charisma*0.5))
+        self.skills['search'] = int((self.awareness*0.5)+(self.intelligence*0.5))
+        self.skills['sneak'] = int((self.awareness*0.5)+(self.dexterity*0.5))
         self.skills['travel'] = int(self.awareness*1.5)
 
     def weapon_proficiency(self, hand):
