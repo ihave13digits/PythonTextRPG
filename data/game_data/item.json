@@ -82,6 +82,7 @@
 
 
 "charcoal"                  : {"type" : "material", "value" : 5, "rarity" : 50, "count" : 1},
+"sand"                      : {"type" : "material", "value" : 5, "rarity" : 0, "count" : 1},
 "wood"                      : {"type" : "material", "value" : 5, "rarity" : 50, "count" : 1},
 "hardwood"                  : {"type" : "material", "value" : 25, "rarity" : 25, "count" : 1},
 "ent wood"                  : {"type" : "material", "value" : 250, "rarity" : 2, "count" : 1},
@@ -89,6 +90,7 @@
 "chain"                     : {"type" : "material", "value" : 50, "rarity" : 12, "count" : 1},
 "rope"                      : {"type" : "material", "value" : 25, "rarity" : 25, "count" : 1},
 "string"                    : {"type" : "material", "value" : 5, "rarity" : 50, "count" : 1},
+"flask"                     : {"type" : "material", "value" : 50, "rarity" : 10, "count" : 1},
 
 "blank scroll"              : {"type" : "material", "value" : 250, "rarity" : 2, "count" : 1},
 "cloth"                     : {"type" : "material", "value" : 25, "rarity" : 10, "count" : 1},

@@ -36,7 +36,10 @@
 
 "caiman"         : {"hp":10, "mp":5, "mag":1, "atk":2, "def":2, "exp":15, "lup":100, "point":2, "curve":1.25, "str":12, "con":11,"dex":4,"awa":6,"int":4,"cha":8},
 "crocodile"      : {"hp":15, "mp":5, "mag":1, "atk":3, "def":3, "exp":15, "lup":100, "point":2, "curve":1.25, "str":16, "con":15,"dex":6,"awa":8,"int":5,"cha":8},
-"lynx"           : {"hp":5, "mp":10, "mag":2, "atk":2, "def":2, "exp":15, "lup":100, "point":2, "curve":1.25, "str":5, "con":4,"dex":8,"awa":7,"int":6,"cha":8},
+"python"         : {"hp":10, "mp":5, "mag":1, "atk":2, "def":2, "exp":15, "lup":100, "point":2, "curve":1.25, "str":14, "con":13,"dex":8,"awa":8,"int":5,"cha":6},
+"anaconda"       : {"hp":15, "mp":5, "mag":1, "atk":3, "def":3, "exp":15, "lup":100, "point":2, "curve":1.25, "str":16, "con":15,"dex":10,"awa":8,"int":6,"cha":7},
+"bobcat"         : {"hp":4, "mp":10, "mag":2, "atk":2, "def":2, "exp":15, "lup":100, "point":2, "curve":1.25, "str":5, "con":3,"dex":8,"awa":8,"int":7,"cha":7},
+"lynx"           : {"hp":6, "mp":10, "mag":2, "atk":2, "def":2, "exp":15, "lup":100, "point":2, "curve":1.25, "str":5, "con":4,"dex":8,"awa":7,"int":6,"cha":8},
 "panther"        : {"hp":10, "mp":10, "mag":2, "atk":2, "def":2, "exp":15, "lup":100, "point":2, "curve":1.25, "str":10, "con":8,"dex":9,"awa":7,"int":5,"cha":7},
 "lion"           : {"hp":10, "mp":10, "mag":2, "atk":2, "def":2, "exp":15, "lup":100, "point":2, "curve":1.25, "str":10, "con":9,"dex":7,"awa":7,"int":5,"cha":8},
 "sabretooth"     : {"hp":15, "mp":10, "mag":2, "atk":3, "def":2, "exp":20, "lup":100, "point":2, "curve":1.25, "str":10, "con":12,"dex":10,"awa":13,"int":7,"cha":8},

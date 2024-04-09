@@ -30,7 +30,7 @@
     "travel" : {"encounter":30, "south":"Glutton's Bay", "east":"Elder's Peak"}
     },
 "Glutton's Bay" : {
-    "mobs" : ["slime beast","crocodile","crocodile","crocodile","crocodile","human","dwarf","gnome","orc","elf","giant"],
+    "mobs" : ["slime beast","caiman","caiman","crocodile","python","anaconda","human","dwarf","gnome","orc","elf","giant"],
     "forage" : ["rope","raw fish","raw fish","raw fish"],
     "shop" : {"gold" : 1000, "markup" : 1.0, "restock" : 10, "inventory" : {}, "item_types" : ["material","food","potion","scroll","arms","armor"]},
     "travel" : {"encounter":30, "north":"Gnarled Pass", "south":"Port Grace", "east":"Baggerton"}
@@ -54,13 +54,13 @@
     "travel" : {"encounter":10, "north":"Baggerton", "south":"Ditherton", "east":"Ruined Forest", "west":"Port Grace"}
     },
 "Cold Flats" : {
-    "mobs" : ["slime beast","bear","bear","wolf","wolf","wolf","wolf","dire wolf","human","human","goblin","ogre","ogre","orc","orc","orc"],
+    "mobs" : ["slime beast","bear","bear","lynx","wolf","wolf","wolf","dire wolf","human","human","goblin","ogre","ogre","orc","orc","orc"],
     "forage" : ["iron ore","flax","flax","flax","flax"],
     "shop" : {"gold" : 1000, "markup" : 1.0, "restock" : 10, "inventory" : {}, "item_types" : ["material","food","potion","scroll"]},
     "travel" : {"encounter":30, "north":"Port Grace", "east":"Ditherton"}
     },
 "Ruined Forest" : {
-    "mobs" : ["slime beast","scorpion","scorpion","bear","bear","bear","crocodile","crocodile","panther","panther","panther","panther","sabretooth","human","orc","orc","elf","elf"],
+    "mobs" : ["slime beast","scorpion","scorpion","bear","bear","bear","crocodile","crocodile","bobcat","bobcat","bobcat","lynx","lynx","panther","sabretooth","human","orc","orc","elf","elf"],
     "forage" : ["wood","wood","wood","ent wood","flax","flax","flax","flax"],
     "shop" : {"gold" : 1000, "markup" : 1.0, "restock" : 10, "inventory" : {}, "item_types" : ["material","food","potion"]},
     "travel" : {"encounter":40, "north":"Brisby", "south":"Smeade", "east":"Rolnhelm", "west":"Fairlanding"}
