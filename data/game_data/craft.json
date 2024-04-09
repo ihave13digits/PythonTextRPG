@@ -77,12 +77,12 @@
 "stew"                      : {"craft":15, "take":{"raw meat":1, "carrot":1, "potato":1}, "give":{"stew":1}},
 
 "minor health potion"       : {"craft":25, "take":{"flask":1}, "give":{"minor health potion":1}},
-"health potion"             : {"craft":50, "take":{"flask":1}, "give":{"health potion":1}},
-"major health potion"       : {"craft":75, "take":{"flask":1}, "give":{"major health potion":1}},
+"health potion"             : {"craft":50, "take":{"minor health potion":2}, "give":{"health potion":1, "flask":1}},
+"major health potion"       : {"craft":75, "take":{"health potion":2}, "give":{"major health potion":1, "flask":1}},
 "minor mana potion"         : {"craft":25, "take":{"flask":1}, "give":{"minor mana potion":1}},
-"mana potion"               : {"craft":50, "take":{"flask":1}, "give":{"mana potion":1}},
-"major mana potion"         : {"craft":75, "take":{"flask":1}, "give":{"major mana potion":1}},
-"elixer"                    : {"craft":100, "take":{"flask":1}, "give":{"elixer":1}},
+"mana potion"               : {"craft":50, "take":{"minor mana potion":2}, "give":{"mana potion":1, "flask":1}},
+"major mana potion"         : {"craft":75, "take":{"mana potion":2}, "give":{"major mana potion":1, "flask":1}},
+"elixer"                    : {"craft":100, "take":{"health potion":1, "mana potion":1}, "give":{"elixer":1, "flask":1}},
 
 "club"                       : {"craft":10, "take":{"wood":1}, "give":{"club":1}},
 "club +1"                    : {"craft":15, "take":{"cloth":1, "wood":1}, "give":{"club +1":1}},
