@@ -83,6 +83,8 @@
 
 "charcoal"                  : {"type" : "material", "value" : 5, "rarity" : 50, "count" : 1},
 "sand"                      : {"type" : "material", "value" : 5, "rarity" : 0, "count" : 1},
+"clay"                      : {"type" : "material", "value" : 10, "rarity" : 0, "count" : 1},
+"lime"                      : {"type" : "material", "value" : 25, "rarity" : 0, "count" : 1},
 "wood"                      : {"type" : "material", "value" : 5, "rarity" : 50, "count" : 1},
 "hardwood"                  : {"type" : "material", "value" : 25, "rarity" : 25, "count" : 1},
 "ent wood"                  : {"type" : "material", "value" : 250, "rarity" : 2, "count" : 1},
@@ -100,8 +102,10 @@
 "gargoyle fang"             : {"type" : "material", "value" : 100, "rarity" : 5, "count" : 1},
 "wyvern fang"               : {"type" : "material", "value" : 250, "rarity" : 5, "count" : 1},
 "dragon fang"               : {"type" : "material", "value" : 500, "rarity" : 2, "count" : 1},
-
-
+"gargoyle blood"            : {"type" : "material", "value" : 100, "rarity" : 5, "count" : 1},
+"wyvern blood"              : {"type" : "material", "value" : 250, "rarity" : 5, "count" : 1},
+"dragon blood"              : {"type" : "material", "value" : 500, "rarity" : 2, "count" : 1},
+"water"                     : {"type" : "material", "value" : 50, "rarity" : 25, "count" : 5},
 
 "raw meat"                  : {"type" : "material", "value" : 5, "rarity" : 10, "count" : 1},
 "raw fish"                  : {"type" : "material", "value" : 5, "rarity" : 20, "count" : 1},
