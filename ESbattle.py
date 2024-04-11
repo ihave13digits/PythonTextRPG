@@ -19,7 +19,8 @@ def battle_attack():
     if select == "0": return
     if select == "1": hand = "left hand"
     if select == "2": hand = "right hand"
-    chance = int(75+(50-(V.player.proficiency.get(V.player.equip[hand], 0)*0.25)))
+    margin = (V.player.proficiency.get(V.player.equip[hand], 0)*0.5)
+    chance = int(50+margin)
     if V.roll_skill(V.player, "combat", chance):
         dmg = V.player.get_damage(hand)
         V.player.weapon_proficiency(hand)
@@ -145,7 +146,7 @@ def battle_ai():
         try:
             for i in V.mob.inventory:
                 if 'hp' in items[i] and not 'mp' in items[i]:
-                    if V.mob.hp+items[i]['hp'] <= V.mob.HP:
+                    if V.mob.hp+items[i]['hp'] <= V.mob.HP or V.mob.hp < V.mob.HP/4:
                         action = "item"
                         aid_id = i
                         can_perform_action = False
@@ -154,7 +155,7 @@ def battle_ai():
         try:
             for i in V.mob.inventory:
                 if 'mp' in items[i] and not 'hp' in items[i]:
-                    if V.mob.mp+items[i]['mp'] <= V.mob.MP:
+                    if V.mob.mp+items[i]['mp'] <= V.mob.MP or V.mob.mp < V.mob.MP/4:
                         action = "item"
                         aid_id = i
                         can_perform_action = False

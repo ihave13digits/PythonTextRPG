@@ -4,8 +4,11 @@ from output import *
 def player_item():
     sel = V.inventory_selection(V.player.inventory, "inventory_menu")
     if sel != "nothing":
-        V.player.use_item(sel)
-        T.text("{} used {}".format(V.player.name, sel))
+        val = V.player.use_item(sel)
+        if val > 0:
+            T.text("{} used {}".format(V.player.name, sel))
+        else:
+            T.text("{} observed {}".format(V.player.name, sel))
 
 def show_recipe(r):
     T.clear_text()

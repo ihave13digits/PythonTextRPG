@@ -284,41 +284,53 @@ class Entity():
 
     def use_item(self, item):
         value = 0
-        can_delete = True
+        can_delete = False
         if "hp" in items[item]:
+            can_delete = True
             value = min(self.hp+items[item]['hp'], self.HP)-self.hp
             self.hp = min(self.hp+items[item]['hp'], self.HP)
         if "mp" in items[item]:
+            can_delete = True
             value = min(self.mp+items[item]['mp'], self.MP)-self.mp
             self.mp = min(self.mp+items[item]['mp'], self.MP)
         if "HP" in items[item]:
+            can_delete = True
             value = items[item]['HP']
             self.HP += value
         if "MP" in items[item]:
+            can_delete = True
             value = items[item]['MP']
             self.MP += value
         if "mag" in items[item]:
+            can_delete = True
             value = items[item]['mag']
             self.magic += value
         if "atk" in items[item]:
+            can_delete = True
             value = items[item]['atk']
             self.attack += value
         if "def" in items[item]:
+            can_delete = True
             value = items[item]['def']
             self.defense += value
         if "poisoned" in items[item]:
+            can_delete = True
             value = items[item]['poisoned']
             self.poisoned = value
         if "confused" in items[item]:
+            can_delete = True
             value = items[item]['confused']
             self.confused = value
         if "stunned" in items[item]:
+            can_delete = True
             value = items[item]['stunned']
             self.stunned = value
         if "burned" in items[item]:
+            can_delete = True
             value = items[item]['burned']
             self.burned = value
         if "spell" in items[item]:
+            can_delete = True
             self.add_spell(items[item]['spell'])
         if can_delete:
             self.del_item(item)
